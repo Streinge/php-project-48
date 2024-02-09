@@ -1,0 +1,21 @@
+{
+    "name": "hexlet/code",
+    "bin": ["bin/gendiff"],
+    "type": "project",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Hexlet\\Code\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "OlegSofonov",
+            "email": "olesof@mail.ru"
+        }
+    ],
+    "require": {
+        "docopt/docopt": "^1.0"
+    },
+    "description": "Study project"
+}
