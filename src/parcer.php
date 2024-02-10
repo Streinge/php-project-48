@@ -15,8 +15,8 @@ if (file_exists($autoloadPath1)) {
 use function Functional\flatten;
 
 function toString($value)
-// эта функция делает так, чтобы true и false выводились как строка
 {
+    // эта функция делает так, чтобы true и false выводились как строка
      return trim(var_export($value, true), "'");
 }
 
@@ -25,47 +25,26 @@ $file2 = '../file2.json';
 $jsonArray1 = json_decode(file_get_contents($file1), true);
 $jsonArray2 = json_decode(file_get_contents($file2), true);
 
-$keys1 = array_keys($jsonArray1);
-$keys2 = array_keys($jsonArray2);
+$jsonArray1 = array_map(fn($value) => toString($value), $jsonArray1);
+$jsonArray2 = array_map(fn($value) => toString($value), $jsonArray2);
 
-$allKeys = array_unique(array_merge($keys1, $keys2));
+$equalKeys = array_intersect(array_keys($jsonArray1), array_keys($jsonArray2));
 
-sort($allKeys);
-
-
-
-$element = function ($key) use ($jsonArray1, $jsonArray2, $keys1, $keys2) {
-
-    $value1 = (array_key_exists($key, $jsonArray1)) ? toString($jsonArray1[$key]) : null;
-
-    $value2 = (array_key_exists($key, $jsonArray2)) ? toString($jsonArray2[$key]) : null;
-
-    return ($value1 && $value2) ? [[$key, $value2], [$key, $value1]] : null;
-
-    /*if ($value1 && $value2) {
-        if ($value1 === $value2) {
-            return ["    {$key} : {$value1}"];
-        } else {
-            return ["  - {$key} : {$value2}", "  + {$key} : {$value1}"];
-        }
-    } elseif ($value1) {
-        return ["  + {$key} : {$value1}"];
-    } else {
-        return ["  - {$key} : {$value2}"];
-    }*/
-};
-
-
-
-
-//$result = array_map(fn($key) => array_key_exists($key, $jsonFile2) <=> array_key_exists($key, $jsonFile1), $allKeys);
-//$new = array_combine($allKeys, $result);
-
-$equalKeys = array_intersect($keys1, $keys2);
 $keysEqualValues = array_filter($equalKeys, fn($key) => $jsonArray1[$key] === $jsonArray2[$key]);
 
+$filteredEqual =  array_filter($jsonArray1, fn($key) => in_array($key, $keysEqualValues), ARRAY_FILTER_USE_KEY);
 $filteredJson1 =  array_filter($jsonArray1, fn($key) => !in_array($key, $keysEqualValues), ARRAY_FILTER_USE_KEY);
+$filteredJson2 =  array_filter($jsonArray2, fn($key) => !in_array($key, $keysEqualValues), ARRAY_FILTER_USE_KEY);
 
+$arrayStringsEqual = array_map(fn($key) => "    {$key} : {$filteredEqual[$key]}", array_keys($filteredEqual));
+$arrayStrings2 = array_map(fn($key) => "  - {$key} : {$filteredJson2[$key]}", array_keys($filteredJson2));
+$arrayStrings1 = array_map(fn($key) => "  + {$key} : {$filteredJson1[$key]}", array_keys($filteredJson1));
+$result = array_merge($arrayStringsEqual, $arrayStrings2, $arrayStrings1);
 
-//$string = implode("\n", $result);
-print_r($filteredJson1);
+const INDEX_FIRST_CHAR_KEY = 4;
+
+usort($result, fn($a, $b) => $a[INDEX_FIRST_CHAR_KEY] <=> $b[INDEX_FIRST_CHAR_KEY]);
+
+$stringFromArray = implode("\n", $result);
+
+print_r("{\n{$stringFromArray}\n}");
