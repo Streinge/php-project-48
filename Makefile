@@ -8,7 +8,10 @@ validate:
 	composer validate
 
 autoload:
-		composer dump-autoload
+	composer dump-autoload
 
 lint:
-		composer exec --verbose phpcs -- --standard=PSR12 src bin
+	composer exec --verbose phpcs -- --standard=PSR12 src bin
+
+say-hello:
+	echo "Hello World!"
