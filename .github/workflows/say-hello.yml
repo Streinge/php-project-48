@@ -1,3 +1,4 @@
+# file: .github/workflows/say-hello.yml
 name: say-hello
 # on – определяет события, которые запускают воркфлоу
 on: push
