@@ -2,49 +2,50 @@
 
 namespace Hexlet\Code;
 
-$autoloadPath1 = __DIR__ . '/../../../autoload.php';
-$autoloadPath2 = __DIR__ . '/../vendor/autoload.php';
-if (file_exists($autoloadPath1)) {
-    require_once $autoloadPath1;
-} else {
-    require_once $autoloadPath2;
-}
+const INDEX_FIRST_CHAR_KEY = 4;
 
-
-
-use function Functional\flatten;
-
-function toString($value)
+function toString(mixed $value): string
 {
     // эта функция делает так, чтобы true и false выводились как строка
      return trim(var_export($value, true), "'");
 }
 
-$file1 = '../file1.json';
-$file2 = '../file2.json';
-$jsonArray1 = json_decode(file_get_contents($file1), true);
-$jsonArray2 = json_decode(file_get_contents($file2), true);
 
-$jsonArray1 = array_map(fn($value) => toString($value), $jsonArray1);
-$jsonArray2 = array_map(fn($value) => toString($value), $jsonArray2);
+function parcer(string $file1, string $file2): string
+{
+    $absolutPath = function (string $file): string {
+        $directoryProject = substr(__DIR__, 0, -3);
+        $arrayPathFile = (explode('/', $file));
+        return "{$directoryProject}{$arrayPathFile[count($arrayPathFile) - 1]}";
+    };
 
-$equalKeys = array_intersect(array_keys($jsonArray1), array_keys($jsonArray2));
+    $jsonArray1 = json_decode(file_get_contents($absolutPath($file1)), true);
+    $jsonArray2 = json_decode(file_get_contents($absolutPath($file2)), true);
 
-$keysEqualValues = array_filter($equalKeys, fn($key) => $jsonArray1[$key] === $jsonArray2[$key]);
+    $jsonArray1 = array_map(fn($value) => toString($value), $jsonArray1);
+    $jsonArray2 = array_map(fn($value) => toString($value), $jsonArray2);
 
-$filteredEqual =  array_filter($jsonArray1, fn($key) => in_array($key, $keysEqualValues), ARRAY_FILTER_USE_KEY);
-$filteredJson1 =  array_filter($jsonArray1, fn($key) => !in_array($key, $keysEqualValues), ARRAY_FILTER_USE_KEY);
-$filteredJson2 =  array_filter($jsonArray2, fn($key) => !in_array($key, $keysEqualValues), ARRAY_FILTER_USE_KEY);
+    $equalKeys = array_intersect(array_keys($jsonArray1), array_keys($jsonArray2));
 
-$arrayStringsEqual = array_map(fn($key) => "    {$key} : {$filteredEqual[$key]}", array_keys($filteredEqual));
-$arrayStrings2 = array_map(fn($key) => "  - {$key} : {$filteredJson2[$key]}", array_keys($filteredJson2));
-$arrayStrings1 = array_map(fn($key) => "  + {$key} : {$filteredJson1[$key]}", array_keys($filteredJson1));
-$result = array_merge($arrayStringsEqual, $arrayStrings2, $arrayStrings1);
+    $keysEqualValues = array_filter($equalKeys, fn($key) => $jsonArray1[$key] === $jsonArray2[$key]);
 
-const INDEX_FIRST_CHAR_KEY = 4;
+    $filteredEqual =  array_filter($jsonArray1, fn($key) => in_array($key, $keysEqualValues), ARRAY_FILTER_USE_KEY);
+    $filteredJson1 =  array_filter($jsonArray1, fn($key) => !in_array($key, $keysEqualValues), ARRAY_FILTER_USE_KEY);
+    $filteredJson2 =  array_filter($jsonArray2, fn($key) => !in_array($key, $keysEqualValues), ARRAY_FILTER_USE_KEY);
 
-usort($result, fn($a, $b) => $a[INDEX_FIRST_CHAR_KEY] <=> $b[INDEX_FIRST_CHAR_KEY]);
+    $formedStr = function (string $sign, string $key, mixed $value): string {
+        return "  {$sign} {$key} : {$value}";
+    };
 
-$stringFromArray = implode("\n", $result);
+    $arrayStringsEqual = array_map(fn($key) => $formedStr(' ', $key, $filteredEqual[$key]), array_keys($filteredEqual));
+    $arrayStrings1 = array_map(fn($key) => $formedStr('-', $key, $filteredJson1[$key]), array_keys($filteredJson1));
+    $arrayStrings2 = array_map(fn($key) => $formedStr('+', $key, $filteredJson2[$key]), array_keys($filteredJson2));
 
-print_r("{\n{$stringFromArray}\n}");
+    $result = array_merge($arrayStringsEqual, $arrayStrings1, $arrayStrings2);
+
+    usort($result, fn($a, $b) => $a[INDEX_FIRST_CHAR_KEY] <=> $b[INDEX_FIRST_CHAR_KEY]);
+
+    $stringFromArray = implode("\n", $result);
+
+    return "{\n{$stringFromArray}\n}\n";
+}

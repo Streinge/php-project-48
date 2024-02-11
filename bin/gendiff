@@ -10,6 +10,8 @@ if (file_exists($autoloadPath1)) {
     require_once $autoloadPath2;
 }
 
+use function Hexlet\Code\parcer;
+
 $doc = <<<DOC
 
 Generate diff
@@ -28,3 +30,9 @@ DOC;
 
 
 $args = Docopt::handle($doc);
+
+
+$file1 = $args['<firstFile>'];
+$file2 = $args['<secondFile>'];
+
+print_r(parcer($file1, $file2));
