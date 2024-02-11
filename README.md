@@ -2,6 +2,8 @@
 [![Actions Status](https://github.com/Streinge/php-project-48/actions/workflows/hexlet-check.yml/badge.svg)](https://github.com/Streinge/php-project-48/actions)
 ### CodeClimate Tests
 [![Maintainability](https://api.codeclimate.com/v1/badges/32274ac96ba291b0eb42/maintainability)](https://codeclimate.com/github/Streinge/php-project-48/maintainability)
+### Github Actions
+![example branch parameter](https://github.com/github/docs/actions/workflows/main.yml/badge.svg?branch=main)
 
 ### Asciinema recordings
 
