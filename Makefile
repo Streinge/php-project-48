@@ -15,3 +15,6 @@ lint:
 
 main:
 	echo "Hello World!"
+
+test:
+	composer exec --verbose phpunit tests
