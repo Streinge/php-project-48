@@ -9,6 +9,9 @@
         },
         "files": [
             "src/genDiff.php"
+        ],
+        "classmap": [
+            "src/"
         ]
     },
     "authors": [
@@ -21,5 +24,8 @@
         "docopt/docopt": "^1.0",
         "lstrojny/functional-php": "^1.17"
     },
-    "description": "Study project"
+    "description": "Study project",
+    "require-dev": {
+        "phpunit/phpunit": "^10"
+    }
 }
