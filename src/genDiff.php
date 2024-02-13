@@ -19,8 +19,15 @@ function genDiff(string $file1, string $file2): string
         return "{$directoryProject}{$arrayPathFile[count($arrayPathFile) - 1]}";
     };
 
-    $jsonArray1 = json_decode(file_get_contents($absolutPath($file1)), true);
-    $jsonArray2 = json_decode(file_get_contents($absolutPath($file2)), true);
+    $isEmpty1 = empty(file_get_contents($absolutPath($file1)));
+    $isEmpty2 = empty(file_get_contents($absolutPath($file2)));
+
+    if ($isEmpty1 && $isEmpty2) {
+        return '';
+    }
+
+    $jsonArray1 = json_decode(file_get_contents($absolutPath($file1)), true) ?? [];
+    $jsonArray2 = json_decode(file_get_contents($absolutPath($file2)), true) ?? [];
 
     $jsonArray1 = array_map(fn($value) => toString($value), $jsonArray1);
     $jsonArray2 = array_map(fn($value) => toString($value), $jsonArray2);

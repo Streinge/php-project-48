@@ -8,14 +8,39 @@ use function Hexlet\Code\genDiff;
 
 class GenDiffTest extends TestCase
 {
-    // Метод, функция определенная внутри класса
-    // Должна начинаться со слова test
-    // public – чтобы PHPUnit мог вызвать этот тест снаружи
     public function testGendiff(): void
     {
-        $exepted = "{\n  - follow : false\n    host : hexlet.io\n  - proxy : 123.234.53.22\n  - timeout : 50\n  + timeout : 20\n  + verbose : true\n}\n";
 
-        $this->assertEquals($exepted, genDiff('fixtures/file1.json', 'fixtures/file2.json'));
-        //$this->assertEquals('olleh', reverseString('hello'));
+        $exepted = function (array $exeptedArray): string {
+            $exeptedStr = implode("\n", $exeptedArray);
+            return "{\n{$exeptedStr}\n}\n";
+        };
+
+        $exeptedArray1 = [
+            '  - follow : false',
+            '    host : hexlet.io',
+            '  - proxy : 123.234.53.22',
+            '  - timeout : 50',
+            '  + timeout : 20',
+            '  + verbose : true'
+        ];
+
+        $exeptedArray2 = [
+            '  - follow : false',
+            '  - host : hexlet.io',
+            '  - proxy : 123.234.53.22',
+            '  - timeout : 50'
+        ];
+
+        $exeptedArray3 = [
+            '  + host : hexlet.io',
+            '  + timeout : 20',
+            '  + verbose : true'
+        ];
+
+        $this->assertEquals($exepted($exeptedArray1), genDiff('fixtures/file1.json', 'fixtures/file2.json'));
+        $this->assertEquals($exepted($exeptedArray2), genDiff('fixtures/file1.json', 'fixtures/file4.json'));
+        $this->assertEquals($exepted($exeptedArray3), genDiff('fixtures/file3.json', 'fixtures/file2.json'));
+        $this->assertEmpty(genDiff('fixtures/file3.json', 'fixtures/file4.json'));
     }
 }
