@@ -13,5 +13,5 @@ autoload:
 lint:
 	composer exec --verbose phpcs -- --standard=PSR12 src bin
 
-say-hello:
+main:
 	echo "Hello World!"

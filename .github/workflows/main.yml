@@ -1,5 +1,5 @@
-# file: .github/workflows/say-hello.yml
-name: say-hello
+# file: .github/workflows/main.yml
+name: main
 # on – определяет события, которые запускают воркфлоу
 on: push
 jobs:
@@ -14,4 +14,4 @@ jobs:
       - uses: actions/checkout@v3
       # run – произвольная bash-команда
       # ls -la выведет содержимое текущего репозитория
-      - run: make say-hello
+      - run: make main
