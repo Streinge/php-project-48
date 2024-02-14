@@ -12,14 +12,12 @@ jobs:
       # экшен — выполняет какую-то задачу
       # checkout — клонирует репозиторий
       - uses: actions/checkout@v3
-      - name: Composer install
-        uses: php-actions/composer@v6
+      - run: make install
       - name: PHP Code Sniffer
         uses: php-actions/phpcs@v1
         with:
           php_version: 8.1
           path: src/
           standard: PSR12
-      - run: make install
       - run: make test
       - run: make lint
