@@ -20,5 +20,7 @@ jobs:
           # Specify the PHP version
           php-version: '8.2'
       - run: make install
+      - name: PHP Code Sniffer
+        uses: php-actions/phpcs@v1
       - run: make test
       - run: make lint
