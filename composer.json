@@ -3,6 +3,9 @@
     "bin": ["bin/gendiff"],
     "type": "project",
     "license": "MIT",
+    "scripts": {
+        "test": "phpunit tests"
+      },
     "autoload": {
         "psr-4": {
             "Hexlet\\Code\\": "src/"
@@ -14,6 +17,11 @@
             "src/"
         ]
     },
+    "autoload-dev": {
+        "psr-4": {
+          "Php\\Package\\Tests\\": "tests"
+        }
+      },
     "authors": [
         {
             "name": "OlegSofonov",
