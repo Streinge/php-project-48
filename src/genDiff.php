@@ -15,10 +15,10 @@ function genDiff(string $file1, string $file2): string
 {
     $absolutPath = function (string $file): string {
         $directoryProject = substr(__DIR__, 0, -3);
-        $arrayPathFile = (explode('/', $file));
-        return "{$directoryProject}{$arrayPathFile[count($arrayPathFile) - 1]}";
+        $arrayPathFile = explode('/', $file);
+        return "{$directoryProject}tests/fixtures/{$arrayPathFile[count($arrayPathFile) - 1]}";
     };
-
+ 
     $isEmpty1 = empty(file_get_contents($absolutPath($file1)));
     $isEmpty2 = empty(file_get_contents($absolutPath($file2)));
 
