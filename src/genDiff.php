@@ -18,7 +18,7 @@ function genDiff(string $file1, string $file2): string
         $arrayPathFile = explode('/', $file);
         return "{$directoryProject}tests/fixtures/{$arrayPathFile[count($arrayPathFile) - 1]}";
     };
- 
+
     $isEmpty1 = empty(file_get_contents($absolutPath($file1)));
     $isEmpty2 = empty(file_get_contents($absolutPath($file2)));
 
