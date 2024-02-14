@@ -1,2 +1,5 @@
 /vendor/
 primer.php
+/.phpunit.cache
+.phpunit.result.cache
+/build
