@@ -12,6 +12,14 @@ jobs:
       # экшен — выполняет какую-то задачу
       # checkout — клонирует репозиторий
       - uses: actions/checkout@v3
+      - name: Composer install
+        uses: php-actions/composer@v6
+      - name: PHP Code Sniffer
+        uses: php-actions/phpcs@v1
+        with:
+          php_version: 8.1
+          path: src/
+          standard: phpcs.xml
       - run: make install
       - run: make test
       - run: make lint
