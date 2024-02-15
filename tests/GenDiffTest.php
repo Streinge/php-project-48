@@ -12,8 +12,9 @@ class GenDiffTest extends TestCase
     {
 
         $exepted = function (array $exeptedArray): string {
-            $exeptedStr = implode("\n", $exeptedArray);
-            return "{\n{$exeptedStr}\n}\n";
+            $parts = ["{", ...$exeptedArray, "}\n"];
+            $stringFromArray = implode("\n", $parts);
+            return $stringFromArray;
         };
 
         $exeptedArray1 = [
@@ -38,9 +39,9 @@ class GenDiffTest extends TestCase
             '  + verbose : true'
         ];
 
-        $this->assertEquals($exepted($exeptedArray1), genDiff('fixtures/file1.json', 'fixtures/file2.json'));
-        $this->assertEquals($exepted($exeptedArray2), genDiff('fixtures/file1.json', 'fixtures/file4.json'));
-        $this->assertEquals($exepted($exeptedArray3), genDiff('fixtures/file3.json', 'fixtures/file2.json'));
-        $this->assertEmpty(genDiff('fixtures/file3.json', 'fixtures/file4.json'));
+        $this->assertEquals($exepted($exeptedArray1), genDiff('file1.json', 'file2.json'));
+        $this->assertEquals($exepted($exeptedArray2), genDiff('file1.json', 'file4.json'));
+        $this->assertEquals($exepted($exeptedArray3), genDiff('file3.json', 'file2.json'));
+        $this->assertEmpty(genDiff('file3.json', 'file4.json'));
     }
 }

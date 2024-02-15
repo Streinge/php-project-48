@@ -14,9 +14,9 @@ function toString(mixed $value): string
 function genDiff(string $file1, string $file2): string
 {
     $absolutPath = function (string $file): string {
-        $directoryProject = substr(__DIR__, 0, -3);
-        $arrayPathFile = explode('/', $file);
-        return "{$directoryProject}tests/fixtures/{$arrayPathFile[count($arrayPathFile) - 1]}";
+        $directoryProject = substr(__DIR__, 0, -4);
+        $parts = [$directoryProject, 'tests/fixtures', $file];
+        return implode('/', $parts);
     };
 
     $isEmpty1 = empty(file_get_contents($absolutPath($file1)));
@@ -41,7 +41,8 @@ function genDiff(string $file1, string $file2): string
     $filteredJson2 =  array_filter($jsonArray2, fn($key) => !in_array($key, $keysEqualValues), ARRAY_FILTER_USE_KEY);
 
     $formedStr = function (string $sign, string $key, mixed $value): string {
-        return "  {$sign} {$key} : {$value}";
+        $parts = [' ', $sign, $key, ':', $value];
+        return implode(' ', $parts);
     };
 
     $arrayStringsEqual = array_map(fn($key) => $formedStr(' ', $key, $filteredEqual[$key]), array_keys($filteredEqual));
@@ -52,7 +53,8 @@ function genDiff(string $file1, string $file2): string
 
     usort($result, fn($a, $b) => $a[INDEX_FIRST_CHAR_KEY] <=> $b[INDEX_FIRST_CHAR_KEY]);
 
-    $stringFromArray = implode("\n", $result);
+    $parts = ["{", ...$result, "}\n"];
+    $stringFromArray = implode("\n", $parts);
 
-    return "{\n{$stringFromArray}\n}\n";
+    return $stringFromArray;
 }
