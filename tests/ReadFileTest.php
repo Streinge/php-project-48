@@ -4,9 +4,9 @@ namespace Hexlet\Code\Tests;
 
 use PHPUnit\Framework\TestCase;
 
-use function Hexlet\Code\genDiff;
+use function Hexlet\Code\readFile;
 
-class GenDiffTest extends TestCase
+class ReadFileTest extends TestCase
 {
     public function testGendiff(): void
     {

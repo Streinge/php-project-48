@@ -2,6 +2,10 @@
 
 namespace Hexlet\Code;
 
+use Hexlet\Code\readFile;
+
+use function PHPUnit\Framework\isNull;
+
 const INDEX_FIRST_CHAR_KEY = 4;
 
 function toString(mixed $value): string
@@ -11,23 +15,21 @@ function toString(mixed $value): string
 }
 
 
-function genDiff(string $file1, string $file2): string
+function genDiff(string $file1, string $file2, string $nameDirWithFunction = 'src'): string|null
 {
-    $absolutPath = function (string $file): string {
-        $directoryProject = substr(__DIR__, 0, -4);
-        $parts = [$directoryProject, 'tests/fixtures', $file];
-        return implode('/', $parts);
-    };
+    $dataFile1 = readFile($file1, $nameDirWithFunction);
+    $dataFile2 = readFile($file2, $nameDirWithFunction);
 
-    $isEmpty1 = empty(file_get_contents($absolutPath($file1)));
-    $isEmpty2 = empty(file_get_contents($absolutPath($file2)));
-
-    if ($isEmpty1 && $isEmpty2) {
-        return '';
+    if (is_null($dataFile1) || is_null($dataFile2)) {
+        return null;
     }
 
-    $jsonArray1 = json_decode(file_get_contents($absolutPath($file1)), true) ?? [];
-    $jsonArray2 = json_decode(file_get_contents($absolutPath($file2)), true) ?? [];
+    if ($dataFile1 === "" && $dataFile2 === "") {
+        return "";
+    }
+
+    $jsonArray1 = json_decode($dataFile1, true) ?? [];
+    $jsonArray2 = json_decode($dataFile2, true) ?? [];
 
     $jsonArray1 = array_map(fn($value) => toString($value), $jsonArray1);
     $jsonArray2 = array_map(fn($value) => toString($value), $jsonArray2);

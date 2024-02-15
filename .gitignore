@@ -3,3 +3,5 @@ primer.php
 /.phpunit.cache
 .phpunit.result.cache
 /build
+file1.json
+file2.json

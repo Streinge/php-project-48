@@ -11,7 +11,9 @@
             "Hexlet\\Code\\": "src/"
         },
         "files": [
-            "src/genDiff.php"
+            "src/genDiff.php",
+            "src/readFile.php",
+            "src/output.php"
         ],
         "classmap": [
             "src/"
