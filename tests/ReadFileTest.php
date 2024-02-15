@@ -8,41 +8,16 @@ use function Hexlet\Code\readFile;
 
 class ReadFileTest extends TestCase
 {
-    public function testGendiff(): void
+    public function testReadFile(): void
     {
+        $exepted1 = file_get_contents('fixtures/file1.json', true);
+        $exepted2 = file_get_contents('fixtures/file2.json', true);
 
-        $exepted = function (array $exeptedArray): string {
-            $parts = ["{", ...$exeptedArray, "}\n"];
-            $stringFromArray = implode("\n", $parts);
-            return $stringFromArray;
-        };
-
-        $exeptedArray1 = [
-            '  - follow : false',
-            '    host : hexlet.io',
-            '  - proxy : 123.234.53.22',
-            '  - timeout : 50',
-            '  + timeout : 20',
-            '  + verbose : true'
-        ];
-
-        $exeptedArray2 = [
-            '  - follow : false',
-            '  - host : hexlet.io',
-            '  - proxy : 123.234.53.22',
-            '  - timeout : 50'
-        ];
-
-        $exeptedArray3 = [
-            '  + host : hexlet.io',
-            '  + timeout : 20',
-            '  + verbose : true'
-        ];
-
-        $this->assertEquals($exepted($exeptedArray1), genDiff('file1.json', 'file2.json', 'tests'));
-        $this->assertEquals($exepted($exeptedArray2), genDiff('file1.json', 'file4.json', 'tests'));
-        $this->assertEquals($exepted($exeptedArray3), genDiff('file3.json', 'file2.json', 'tests'));
-        $this->assertEmpty(genDiff('file3.json', 'file4.json', 'tests'));
-        $this->assertNull(genDiff('file5.json', 'file4.json', 'tests'));
+        $this->assertEquals($exepted1, readfile('file1.json', 'tests'));
+        $this->assertEquals($exepted1, readfile('file1.json', 'src'));
+        $this->assertEquals($exepted2, readfile('file2.json', 'tests'));
+        $this->assertEmpty(readFile('file3.json', 'tests'));
+        $this->assertNull(readFile('file5.json', 'tests'));
+        $this->assertNull(readFile('file1.json', 'unit'));
     }
 }
