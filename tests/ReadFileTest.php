@@ -11,8 +11,9 @@ class ReadFileTest extends TestCase
     public function testReadFile(): void
     {
         $exepted1 = file_get_contents('fixtures/file1.json', true);
+        var_dump($exepted1);
         $exepted2 = file_get_contents('fixtures/file2.json', true);
-
+        var_dump($exepted2);
         $this->assertEquals($exepted1, readfile('file1.json', 'tests'));
         $this->assertEquals($exepted1, readfile('file1.json', 'src'));
         $this->assertEquals($exepted2, readfile('file2.json', 'tests'));
