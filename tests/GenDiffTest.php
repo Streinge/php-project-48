@@ -39,10 +39,12 @@ class GenDiffTest extends TestCase
             '  + verbose : true'
         ];
 
-        $this->assertEquals($exepted($exeptedArray1), genDiff('file1.json', 'file2.json', 'tests'));
-        $this->assertEquals($exepted($exeptedArray2), genDiff('file1.json', 'file4.json', 'tests'));
-        $this->assertEquals($exepted($exeptedArray3), genDiff('file3.json', 'file2.json', 'tests'));
-        $this->assertEmpty(genDiff('file3.json', 'file4.json', 'tests'));
-        $this->assertNull(genDiff('file5.json', 'file4.json', 'tests'));
+        $pathDir = __DIR__;
+
+        $this->assertEquals($exepted($exeptedArray1), genDiff("{$pathDir}/fixtures/file1.json", "{$pathDir}/fixtures/file2.json"));
+        $this->assertEquals($exepted($exeptedArray2), genDiff("{$pathDir}/fixtures/file1.json", "{$pathDir}/fixtures/file4.json"));
+        $this->assertEquals($exepted($exeptedArray3), genDiff("{$pathDir}/fixtures/file3.json", "{$pathDir}/fixtures/file2.json"));
+        $this->assertEmpty(genDiff("{$pathDir}/fixtures/file3.json", "{$pathDir}/fixtures/file4.json"));
+        $this->assertNull(genDiff("{$pathDir}/fixtures/file5.json", "{$pathDir}/fixtures/file4.json"));
     }
 }

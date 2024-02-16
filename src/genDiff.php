@@ -15,10 +15,10 @@ function toString(mixed $value): string
 }
 
 
-function genDiff(string $file1, string $file2, string $nameDirWithFunction = 'src'): string|null
+function genDiff(string $file1, string $file2): string|null
 {
-    $dataFile1 = readFile($file1, $nameDirWithFunction);
-    $dataFile2 = readFile($file2, $nameDirWithFunction);
+    $dataFile1 = readFile($file1);
+    $dataFile2 = readFile($file2);
 
     if (is_null($dataFile1) || is_null($dataFile2)) {
         return null;
