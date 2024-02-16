@@ -2,10 +2,6 @@
 
 namespace Hexlet\Code;
 
-use Hexlet\Code\readFile;
-
-use function PHPUnit\Framework\isNull;
-
 const INDEX_FIRST_CHAR_KEY = 4;
 
 function toString(mixed $value): string
@@ -14,33 +10,26 @@ function toString(mixed $value): string
      return trim(var_export($value, true), "'");
 }
 
-
-function genDiff(string $file1, string $file2): string|null
+function genDiff(array|null $array1, array|null $array2): string|null
 {
-    $dataFile1 = readFile($file1);
-    $dataFile2 = readFile($file2);
-
-    if (is_null($dataFile1) || is_null($dataFile2)) {
+    if (is_null($array1) || is_null($array2)) {
         return null;
     }
 
-    if ($dataFile1 === "" && $dataFile2 === "") {
+    if ($array1 === [] && $array2 === []) {
         return "";
     }
 
-    $jsonArray1 = json_decode($dataFile1, true) ?? [];
-    $jsonArray2 = json_decode($dataFile2, true) ?? [];
+    $array1 = array_map(fn($value) => toString($value), $array1);
+    $array2 = array_map(fn($value) => toString($value), $array2);
 
-    $jsonArray1 = array_map(fn($value) => toString($value), $jsonArray1);
-    $jsonArray2 = array_map(fn($value) => toString($value), $jsonArray2);
+    $equalKeys = array_intersect(array_keys($array1), array_keys($array2));
 
-    $equalKeys = array_intersect(array_keys($jsonArray1), array_keys($jsonArray2));
+    $keysEqualValues = array_filter($equalKeys, fn($key) => $array1[$key] === $array2[$key]);
 
-    $keysEqualValues = array_filter($equalKeys, fn($key) => $jsonArray1[$key] === $jsonArray2[$key]);
-
-    $filteredEqual =  array_filter($jsonArray1, fn($key) => in_array($key, $keysEqualValues), ARRAY_FILTER_USE_KEY);
-    $filteredJson1 =  array_filter($jsonArray1, fn($key) => !in_array($key, $keysEqualValues), ARRAY_FILTER_USE_KEY);
-    $filteredJson2 =  array_filter($jsonArray2, fn($key) => !in_array($key, $keysEqualValues), ARRAY_FILTER_USE_KEY);
+    $filteredEqual =  array_filter($array1, fn($key) => in_array($key, $keysEqualValues), ARRAY_FILTER_USE_KEY);
+    $filtered1 =  array_filter($array1, fn($key) => !in_array($key, $keysEqualValues), ARRAY_FILTER_USE_KEY);
+    $filtered2 =  array_filter($array2, fn($key) => !in_array($key, $keysEqualValues), ARRAY_FILTER_USE_KEY);
 
     $formedStr = function (string $sign, string $key, mixed $value): string {
         $parts = [' ', $sign, $key, ':', $value];
@@ -48,8 +37,8 @@ function genDiff(string $file1, string $file2): string|null
     };
 
     $arrayStringsEqual = array_map(fn($key) => $formedStr(' ', $key, $filteredEqual[$key]), array_keys($filteredEqual));
-    $arrayStrings1 = array_map(fn($key) => $formedStr('-', $key, $filteredJson1[$key]), array_keys($filteredJson1));
-    $arrayStrings2 = array_map(fn($key) => $formedStr('+', $key, $filteredJson2[$key]), array_keys($filteredJson2));
+    $arrayStrings1 = array_map(fn($key) => $formedStr('-', $key, $filtered1[$key]), array_keys($filtered1));
+    $arrayStrings2 = array_map(fn($key) => $formedStr('+', $key, $filtered2[$key]), array_keys($filtered2));
 
     $result = array_merge($arrayStringsEqual, $arrayStrings1, $arrayStrings2);
 
