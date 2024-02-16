@@ -14,7 +14,7 @@
             "src/genDiff.php",
             "src/readFile.php",
             "src/output.php",
-            "src/transformInArray.php",
+            "src/Parsers.php",
             "src/controler.php"
         ],
         "classmap": [

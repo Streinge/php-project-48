@@ -12,4 +12,5 @@
 
 ### Asciinema recordings
 
-* ### [plain](https://asciinema.org/a/kulxZbaygzA8yZQrjOiTMa4Zl)
+* ### [.json](https://asciinema.org/a/kulxZbaygzA8yZQrjOiTMa4Zl)
+* ### [.yml](https://asciinema.org/a/g72du8xLFoh8MwKg4Xu8mP3jx)

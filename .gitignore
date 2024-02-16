@@ -3,8 +3,7 @@ primer.php
 /.phpunit.cache
 .phpunit.result.cache
 /build
-file1.json
-file2.json
 /_css
 /_icons
 /_js
+demo.cast

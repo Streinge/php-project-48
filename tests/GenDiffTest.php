@@ -54,9 +54,6 @@ class GenDiffTest extends TestCase
         $array3 = [];
         $array4 = [];
 
-        $pathDir = __DIR__;
-        //"{$pathDir}/fixtures/file1.json"
-        //"{$pathDir}/fixtures/file2.json"
         $this->assertEquals($exepted($exeptedArray1), genDiff($array1, $array2));
         $this->assertEquals($exepted($exeptedArray2), genDiff($array1, $array4));
         $this->assertEquals($exepted($exeptedArray3), genDiff($array3, $array2));

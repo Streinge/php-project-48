@@ -15,7 +15,6 @@ function jsonInArray(string $filepath): array|null
 function yamlInArray(string $filepath): array|null
 {
     $dataFile1 = readFile($filepath);
-    $yamlArray1 = Yaml::parse($dataFile1);
 
-    return (!is_null($dataFile1)) ? $yamlArray1 : null;
+    return (!is_null($dataFile1)) ? Yaml::parse($dataFile1) : null;
 }
