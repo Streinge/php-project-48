@@ -54,10 +54,16 @@ class GenDiffTest extends TestCase
         $array3 = [];
         $array4 = [];
 
+        $pathDir = __DIR__;
+
+        $exeptedNestedString = file_get_contents("{$pathDir}/fixtures/exeptedNestedJson.txt", true);
+        $exeptedNestedJson = json_encode($exeptedNestedString, )
+
         $this->assertEquals($exepted($exeptedArray1), genDiff($array1, $array2));
         $this->assertEquals($exepted($exeptedArray2), genDiff($array1, $array4));
         $this->assertEquals($exepted($exeptedArray3), genDiff($array3, $array2));
         $this->assertEquals("", genDiff($array3, $array4));
         $this->assertNull(genDiff(null, $array4));
+        $this->assertEquals($exeptedNestedJson, genDiff($array1, $array2));
     }
 }
