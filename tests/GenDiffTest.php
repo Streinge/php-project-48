@@ -5,17 +5,18 @@ namespace Hexlet\Code\Tests;
 use PHPUnit\Framework\TestCase;
 
 use function Hexlet\Code\genDiff;
+use function Hexlet\Code\stringify;
 
 class GenDiffTest extends TestCase
 {
     public function testGendiff(): void
     {
 
-        $exepted = function (array $exeptedArray): string {
+        /*$exepted = function (array $exeptedArray): string {
             $parts = ["{", ...$exeptedArray, "}\n"];
             $stringFromArray = implode("\n", $parts);
             return $stringFromArray;
-        };
+        };*/
 
         $exeptedArray1 = [
             '  - follow : false',
@@ -59,9 +60,9 @@ class GenDiffTest extends TestCase
         //$exeptedNestedString = file_get_contents("{$pathDir}/fixtures/exeptedNestedJson.txt", true);
         //$exeptedNestedJson = json_encode($exeptedNestedString, )
 
-        $this->assertEquals($exepted($exeptedArray1), genDiff($array1, $array2));
-        $this->assertEquals($exepted($exeptedArray2), genDiff($array1, $array4));
-        $this->assertEquals($exepted($exeptedArray3), genDiff($array3, $array2));
+        $this->assertEquals(stringify($exeptedArray1), genDiff($array1, $array2));
+        $this->assertEquals(stringify($exeptedArray2), genDiff($array1, $array4));
+        $this->assertEquals(stringify($exeptedArray3), genDiff($array3, $array2));
         $this->assertEquals("", genDiff($array3, $array4));
         $this->assertNull(genDiff(null, $array4));
         //$this->assertEquals($exeptedNestedJson, genDiff($array1, $array2));

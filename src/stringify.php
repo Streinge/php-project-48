@@ -18,12 +18,13 @@ function stringify($value, string $replacer = ' ', int $spacesCount = 1): string
         $bracketIndent = str_repeat($replacer, $indentSize - $spacesCount);
 
         $lines = array_map(
-            fn($key, $val) => "{$currentIndent}{$key}: {$iter($val, $depth + 1)}",
+            fn($key, $val) => "{$currentIndent}{$iter($val, $depth + 1)}",
             array_keys($currentValue),
             $currentValue
         );
-
-        $result = ['{', ...$lines, "{$bracketIndent}}"];
+        
+        $bracketIndent--;
+        $result = ['{', ...$lines, "{$bracketIndent}}\n"];
 
         return implode("\n", $result);
     };

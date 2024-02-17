@@ -15,7 +15,8 @@
             "src/readComparedFile.php",
             "src/output.php",
             "src/Parsers.php",
-            "src/controler.php"
+            "src/controler.php",
+            "src/stringify.php"
         ],
         "classmap": [
             "src/"

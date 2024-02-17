@@ -31,21 +31,54 @@ function genDiff(array|null $array1, array|null $array2): string|null
     $filtered1 =  array_filter($array1, fn($key) => !in_array($key, $keysEqualValues), ARRAY_FILTER_USE_KEY);
     $filtered2 =  array_filter($array2, fn($key) => !in_array($key, $keysEqualValues), ARRAY_FILTER_USE_KEY);
 
-    $formedStr = function (string $sign, string $key, mixed $value): string {
-        $parts = [' ', $sign, $key, ':', $value];
+    $formedStr = function (string $sign, string $key): string {
+        $parts = [' ', $sign, $key];
         return implode(' ', $parts);
     };
 
-    $arrayStringsEqual = array_map(fn($key) => $formedStr(' ', $key, $filteredEqual[$key]), array_keys($filteredEqual));
-    $arrayStrings1 = array_map(fn($key) => $formedStr('-', $key, $filtered1[$key]), array_keys($filtered1));
-    $arrayStrings2 = array_map(fn($key) => $formedStr('+', $key, $filtered2[$key]), array_keys($filtered2));
+    $arrayStringsEqual = array_reduce(array_keys($filteredEqual), function ($acc, $key) use ($filteredEqual) {
+        $newKey = "  {$key}";
+        $acc[$newKey] = $filteredEqual[$key];
+        return $acc;
+    }, []);
+    $arrayStrings1 = array_reduce(array_keys($filtered1), function ($acc, $key) use ($filtered1) {
+        $newKey = "- {$key}";
+        $acc[$newKey] = $filtered1[$key];
+        return $acc;
+    }, []);
+    $arrayStrings2 = array_reduce(array_keys($filtered2), function ($acc, $key) use ($filtered2) {
+        $newKey = "+ {$key}";
+        $acc[$newKey] = $filtered2[$key];
+        return $acc;
+    }, []);
+
+
+    //$arrayStrings1 = array_map(fn($key) => $formedStr('-', $key, $filtered1[$key]), array_keys($filtered1));
+    //$arrayStrings2 = array_map(fn($key) => $formedStr('+', $key, $filtered2[$key]), array_keys($filtered2));
 
     $result = array_merge($arrayStringsEqual, $arrayStrings1, $arrayStrings2);
 
-    usort($result, fn($a, $b) => $a[INDEX_FIRST_CHAR_KEY] <=> $b[INDEX_FIRST_CHAR_KEY]);
+    usort($result, fn(arrays_key($a), array_keys($b)) => $a <=> $b);
+
+    var_dump($result);
 
     $parts = ["{", ...$result, "}\n"];
     $stringFromArray = implode("\n", $parts);
 
     return $stringFromArray;
 }
+
+$array1 = [
+    'host' => "hexlet.io",
+    'timeout' => 50,
+    'proxy' => "123.234.53.22",
+    'follow' => false
+];
+
+$array2 = [
+    'timeout' => 20,
+    'verbose' => true,
+    'host' => "hexlet.io"
+];
+
+genDiff($array1, $array2);
