@@ -2,7 +2,9 @@
 
 namespace Hexlet\Code;
 
-const INDEX_FIRST_CHAR_KEY = 4;
+use Hexlet\Code\stringfy;
+
+const INDEX_FIRST_CHAR_KEY = 2;
 
 function toString(mixed $value): string
 {
@@ -31,11 +33,6 @@ function genDiff(array|null $array1, array|null $array2): string|null
     $filtered1 =  array_filter($array1, fn($key) => !in_array($key, $keysEqualValues), ARRAY_FILTER_USE_KEY);
     $filtered2 =  array_filter($array2, fn($key) => !in_array($key, $keysEqualValues), ARRAY_FILTER_USE_KEY);
 
-    $formedStr = function (string $sign, string $key): string {
-        $parts = [' ', $sign, $key];
-        return implode(' ', $parts);
-    };
-
     $arrayStringsEqual = array_reduce(array_keys($filteredEqual), function ($acc, $key) use ($filteredEqual) {
         $newKey = "  {$key}";
         $acc[$newKey] = $filteredEqual[$key];
@@ -52,20 +49,14 @@ function genDiff(array|null $array1, array|null $array2): string|null
         return $acc;
     }, []);
 
-
-    //$arrayStrings1 = array_map(fn($key) => $formedStr('-', $key, $filtered1[$key]), array_keys($filtered1));
-    //$arrayStrings2 = array_map(fn($key) => $formedStr('+', $key, $filtered2[$key]), array_keys($filtered2));
-
     $result = array_merge($arrayStringsEqual, $arrayStrings1, $arrayStrings2);
 
-    usort($result, fn(arrays_key($a), array_keys($b)) => $a <=> $b);
+    uksort($result, fn($a, $b) => substr($a, INDEX_FIRST_CHAR_KEY, -1) <=> substr($b, INDEX_FIRST_CHAR_KEY, -1));
 
-    var_dump($result);
+    //$parts = ["{", ...$result, "}\n"];
+    //$stringFromArray = implode("\n", $parts);
 
-    $parts = ["{", ...$result, "}\n"];
-    $stringFromArray = implode("\n", $parts);
-
-    return $stringFromArray;
+    return stringify($result);
 }
 
 $array1 = [
@@ -81,4 +72,4 @@ $array2 = [
     'host' => "hexlet.io"
 ];
 
-genDiff($array1, $array2);
+//print_r(genDiff($array1, $array2));

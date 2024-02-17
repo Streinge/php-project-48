@@ -12,32 +12,26 @@ class GenDiffTest extends TestCase
     public function testGendiff(): void
     {
 
-        /*$exepted = function (array $exeptedArray): string {
-            $parts = ["{", ...$exeptedArray, "}\n"];
-            $stringFromArray = implode("\n", $parts);
-            return $stringFromArray;
-        };*/
-
         $exeptedArray1 = [
-            '  - follow : false',
-            '    host : hexlet.io',
-            '  - proxy : 123.234.53.22',
-            '  - timeout : 50',
-            '  + timeout : 20',
-            '  + verbose : true'
+            '- follow' => false,
+            '  host' => 'hexlet.io',
+            '- proxy' => '123.234.53.22',
+            '- timeout' => 50,
+            '+ timeout' => 20,
+            '+ verbose' => true
         ];
 
         $exeptedArray2 = [
-            '  - follow : false',
-            '  - host : hexlet.io',
-            '  - proxy : 123.234.53.22',
-            '  - timeout : 50'
+            '- follow' => false,
+            '- host' => 'hexlet.io',
+            '- proxy' => '123.234.53.22',
+            '- timeout' => 50
         ];
 
         $exeptedArray3 = [
-            '  + host : hexlet.io',
-            '  + timeout : 20',
-            '  + verbose : true'
+            '+ host' => 'hexlet.io',
+            '+ timeout' => '20',
+            '+ verbose' => true
         ];
 
         $array1 = [
