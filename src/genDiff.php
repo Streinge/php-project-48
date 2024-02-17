@@ -19,7 +19,7 @@ function genDiff(array|null $array1, array|null $array2): string|null
     if ($array1 === [] && $array2 === []) {
         return "";
     }
-    
+
     $array1 = array_map(fn($value) => toString($value), $array1);
     $array2 = array_map(fn($value) => toString($value), $array2);
 
