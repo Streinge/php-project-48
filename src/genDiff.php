@@ -58,18 +58,3 @@ function genDiff(array|null $array1, array|null $array2): string|null
 
     return stringify($result);
 }
-
-$array1 = [
-    'host' => "hexlet.io",
-    'timeout' => 50,
-    'proxy' => "123.234.53.22",
-    'follow' => false
-];
-
-$array2 = [
-    'timeout' => 20,
-    'verbose' => true,
-    'host' => "hexlet.io"
-];
-
-//print_r(genDiff($array1, $array2));
