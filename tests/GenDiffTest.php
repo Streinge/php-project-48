@@ -49,16 +49,84 @@ class GenDiffTest extends TestCase
         $array3 = [];
         $array4 = [];
 
-        $pathDir = __DIR__;
+        $exeptedNestedResult = [
+                              '  common' => [
+                                          '+ follow' => false,
+                                          '  setting1' => 'Value 1',
+                                          '- setting2' => 200,
+                                          '- setting3' => true,
+                                          '+ setting3' => null,
+                                          '+ setting4' => 'blah blah',
+                                          '+ setting5' => [
+                                                         '  key5' =>  'value5'
+                                                          ],
+                                          '  setting6' => [
+                                                        '  doge' => [
+                                                                  '- wow' => '',
+                                                                  '+ wow' => 'so much'
+                                                                  ],
+                                                        '  key' => 'value',
+                                                        '+ ops' => 'vops'
+                                                          ]
+                                          ],
+                               '  group1' => [
+                                             '- baz' => 'bas',
+                                             '+ baz' => 'bars',
+                                             '  foo' => 'bar',
+                                             '- nest' => [
+                                                         '  key' => 'value'
+                                                         ],
+                                             '+ nest' => 'str'
+                                             ],
+                               '- group2' => [
+                                             '  abc' => 12345,
+                                             '  deep' => [
+                                                         '  id' => 45
+                                                         ]
+                                             ],
+                               '+ group3' => [
+                                             '  deep' => [
+                                                       '  id' => [
+                                                               '  number' => 45
+                                                               ]
+                                                       ],
+                                             ' fee' => 100500
+                                             ]
+                                 ];
+        $nestedArray1 = [
+                        "common" => [
+                                    "setting1" => "Value 1",
+                                    "setting2" => 200,
+                                    "setting3" => true,
+                                    "setting6" => [
+                                                  "key" => "value",
+                                                  "doge" => [
+                                                            "wow" => ""
+                                                            ]
+                                                  ]
+                                    ],
+                                    "group1" => [
+                                                "baz" => "bas",
+                                                "foo" => "bar",
+                                                "nest" => [
+                                                          "key" => "value"
+                                                          ]
+                                                ],
+                                    "group2" => [
+                                                "abc" => 12345,
+                                                "deep" => [
+                                                         "id" => 45
+                                                          ]
+                                                ]
+                                                ];
 
-        //$exeptedNestedString = file_get_contents("{$pathDir}/fixtures/exeptedNestedJson.txt", true);
-        //$exeptedNestedJson = json_encode($exeptedNestedString, )
-
+        print_r(stringify($exeptedNestedResult));
         $this->assertEquals(stringify($exeptedArray1), genDiff($array1, $array2));
         $this->assertEquals(stringify($exeptedArray2), genDiff($array1, $array4));
         $this->assertEquals(stringify($exeptedArray3), genDiff($array3, $array2));
         $this->assertEquals("", genDiff($array3, $array4));
         $this->assertNull(genDiff(null, $array4));
+        print_r(genDiff($nestedArray1, $array3));
         //$this->assertEquals($exeptedNestedJson, genDiff($array1, $array2));
     }
 }
