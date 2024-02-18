@@ -53,8 +53,5 @@ function genDiff(array|null $array1, array|null $array2): string|null
 
     uksort($result, fn($a, $b) => substr($a, INDEX_FIRST_CHAR_KEY, -1) <=> substr($b, INDEX_FIRST_CHAR_KEY, -1));
 
-    //$parts = ["{", ...$result, "}\n"];
-    //$stringFromArray = implode("\n", $parts);
-
     return stringify($result);
 }

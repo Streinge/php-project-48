@@ -118,15 +118,45 @@ class GenDiffTest extends TestCase
                                                          "id" => 45
                                                           ]
                                                 ]
-                                                ];
+                        ];
 
-        print_r(stringify($exeptedNestedResult));
+        $nestedArray2 = [
+                        "common" => [
+                                    "follow" => false,
+                                    "setting1" => "Value 1",
+                                    "setting3" => null,
+                                    "setting4" => "blah blah",
+                                    "setting5" => [
+                                                  "key5" => "value5"
+                                                  ],
+                                    "setting6" => [
+                                                  "key" => "value",
+                                                  "ops" => "vops",
+                                                  "doge" => [
+                                                            "wow" => "so much"
+                                                            ]
+                                                  ]
+                                    ],
+                                    "group1" => [
+                                                "foo" => "bar",
+                                                "baz" => "bars",
+                                                "nest" => "str"
+                                                ],
+                                    "group3" => [
+                                                "deep" => [
+                                                          "id" => [
+                                                                  "number" => 45
+                                                                  ]
+                                                          ],
+                                                "fee" => 100500
+                                                ]
+                        ];
+
         $this->assertEquals(stringify($exeptedArray1), genDiff($array1, $array2));
         $this->assertEquals(stringify($exeptedArray2), genDiff($array1, $array4));
         $this->assertEquals(stringify($exeptedArray3), genDiff($array3, $array2));
         $this->assertEquals("", genDiff($array3, $array4));
         $this->assertNull(genDiff(null, $array4));
-        print_r(genDiff($nestedArray1, $array3));
-        //$this->assertEquals($exeptedNestedJson, genDiff($array1, $array2));
+        $this->assertEquals(stringify($exeptedNestedResult), genDiff($nestedArray1, $nestedArray2));
     }
 }
