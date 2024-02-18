@@ -12,6 +12,7 @@ if (file_exists($autoloadPath1)) {
 
 use function Hexlet\Code\controler;
 use function Hexlet\Code\output;
+use function Hexlet\Code\stringify;
 
 $doc = <<<DOC
 
@@ -36,4 +37,4 @@ $args = Docopt::handle($doc);
 $file1 = $args['<firstFile>'];
 $file2 = $args['<secondFile>'];
 
-output(controler($file1, $file2));
+output(controler($file1, $file2, fn() => stringify()));

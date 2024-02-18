@@ -2,6 +2,12 @@
 
 namespace Hexlet\Code;
 
+function toString(mixed $value): string
+{
+    // эта функция делает так, чтобы true и false выводились как строка
+     return trim(var_export($value, true), "'");
+}
+
 function stringify($value, string $replacer = ' ', int $spacesCount = 1): string
 {
     // Функция аналог JavaScript содержит метод JSON.stringify() для приведения к строке любого значения.
@@ -26,7 +32,7 @@ function stringify($value, string $replacer = ' ', int $spacesCount = 1): string
         // $currentValue, которые одновременно подаются в callback функцию как
         // $key, $val !!! то есть одновременно перебираются
         $lines = array_map(
-            fn($key, $val) => "{$currentIndent}{$key}: {$iter($val, $depth + 1)}",
+            fn($key, $val) => "{$currentIndent}{$key}: {$iter($val, $depth + 2)}",
             array_keys($currentValue),
             $currentValue
         );
