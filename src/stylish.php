@@ -33,6 +33,5 @@ function stylish($value, string $replacer = ' ', int $spacesCount = 1): string
 
         return implode("\n", $result);
     };
-    
     return $iter($value, 1);
 }

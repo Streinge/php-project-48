@@ -8,14 +8,17 @@ use Hexlet\Code\genDiff;
 
 function controler(string $filepath1, string $filepath2, callable $fn): string|null
 {
-    $ext1 = pathinfo($filepath1, PATHINFO_EXTENSION);
-    $ext2 = pathinfo($filepath2, PATHINFO_EXTENSION);
-
-    if ($ext1 === 'json' && $ext2 === 'json') {
-        return $fn(genDiff(jsonInArray($filepath1), jsonInArray($filepath2)));
-    } elseif ($ext1 === 'yml' && $ext2 === 'yml') {
-        return $fn(genDiff(yamlInArray($filepath1), yamlInArray($filepath2)));
-    } else {
-        return "Не поддерживается сравнение таких файлов";
-    }
+    $arrayFile = function (string $filepath1): array|null {
+        $ext = pathinfo($filepath1, PATHINFO_EXTENSION);
+        if ($ext === 'json') {
+            return jsonInArray($filepath1);
+        } elseif ($ext = 'yml' || $ext = 'yaml') {
+            return yamlInArray($filepath1);
+        } else {
+            return null;
+        }
+    };
+    $isMyNull = is_null($arrayFile($filepath1)) || is_null($arrayFile($filepath2));
+    $errorStr = "Не поддерживается сравнение таких файлов";
+    return (!$isMyNull) ? $fn(genDiff($arrayFile($filepath1), $arrayFile($filepath2))) : $errorStr;
 }
