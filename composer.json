@@ -16,7 +16,7 @@
             "src/output.php",
             "src/Parsers.php",
             "src/controler.php",
-            "src/stringify.php"
+            "src/stylish.php"
         ],
         "classmap": [
             "src/"

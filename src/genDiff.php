@@ -2,11 +2,9 @@
 
 namespace Hexlet\Code;
 
-use Hexlet\Code\stringify;
-
 const INDEX_FIRST_CHAR_KEY = 2;
 
-function genDiff(array|null $array1, array|null $array2, bool $prefix = false)//: string|null
+function genDiff(array|null $array1, array|null $array2, bool $prefix = false): array|null
 {
     if (is_null($array1) || is_null($array2)) {
         return null;
@@ -27,7 +25,8 @@ function genDiff(array|null $array1, array|null $array2, bool $prefix = false)//
     $filtered1 =  array_filter($array1, fn($key) => !in_array($key, $keysWithoutSign), ARRAY_FILTER_USE_KEY);
     $filtered2 =  array_filter($array2, fn($key) => !in_array($key, $keysWithoutSign), ARRAY_FILTER_USE_KEY);
 
-    $arrayStringsEqual = array_reduce(array_keys($filteredEqual), function ($acc, $key) use ($filteredEqual, $array1, $array2, $prefix) {
+    $keysEqual = array_keys($filteredEqual);
+    $arrayStringsEqual = array_reduce($keysEqual, function ($acc, $key) use ($filteredEqual, $array1, $array2) {
         $newKey = "  {$key}";
         $acc[$newKey] =  !is_array($filteredEqual[$key]) ? $filteredEqual[$key] : genDiff($array1[$key], $array2[$key]);
         return $acc;
@@ -46,11 +45,6 @@ function genDiff(array|null $array1, array|null $array2, bool $prefix = false)//
     $result = array_merge($arrayStringsEqual, $arrayStrings1, $arrayStrings2);
 
     uksort($result, fn($a, $b) => substr($a, INDEX_FIRST_CHAR_KEY) <=> substr($b, INDEX_FIRST_CHAR_KEY));
-
-    //echo "Здесь собирается массив\n";
-    //print_r($result);
-
-    //$result = array_map(fn($value) => is_array($value) ? $value : toString($value), $result);
 
     return $result;
 }
