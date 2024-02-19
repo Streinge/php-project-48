@@ -14,7 +14,7 @@ function controler(string $filepath1, string $filepath2, callable $fn): string|n
     if ($ext1 === 'json' && $ext2 === 'json') {
         return $fn(genDiff(jsonInArray($filepath1), jsonInArray($filepath2)));
     } elseif ($ext1 === 'yml' && $ext2 === 'yml') {
-        return genDiff(yamlInArray($filepath1), yamlInArray($filepath2));
+        return $fn(genDiff(yamlInArray($filepath1), yamlInArray($filepath2)));
     } else {
         return "Не поддерживается сравнение таких файлов";
     }

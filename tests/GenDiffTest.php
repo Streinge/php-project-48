@@ -5,7 +5,7 @@ namespace Hexlet\Code\Tests;
 use PHPUnit\Framework\TestCase;
 
 use function Hexlet\Code\genDiff;
-use function Hexlet\Code\stringify;
+use function Hexlet\Code\stylish;
 
 class GenDiffTest extends TestCase
 {
@@ -90,7 +90,7 @@ class GenDiffTest extends TestCase
                                                                '  number' => 45
                                                                ]
                                                        ],
-                                             ' fee' => 100500
+                                             '  fee' => 100500
                                              ]
                                  ];
         $nestedArray1 = [
@@ -152,11 +152,11 @@ class GenDiffTest extends TestCase
                                                 ]
                         ];
 
-        $this->assertEquals(stringify($exeptedArray1), genDiff($array1, $array2));
-        $this->assertEquals(stringify($exeptedArray2), genDiff($array1, $array4));
-        $this->assertEquals(stringify($exeptedArray3), genDiff($array3, $array2));
-        $this->assertEquals("", genDiff($array3, $array4));
+        $this->assertEquals($exeptedArray1, genDiff($array1, $array2));
+        $this->assertEquals($exeptedArray2, genDiff($array1, $array4));
+        $this->assertEquals($exeptedArray3, genDiff($array3, $array2));
+        $this->assertEquals([], genDiff($array3, $array4));
         $this->assertNull(genDiff(null, $array4));
-        //$this->assertEquals(stringify($exeptedNestedResult), genDiff($nestedArray1, $nestedArray2));
+        $this->assertEquals(($exeptedNestedResult), genDiff($nestedArray1, $nestedArray2));
     }
 }

@@ -11,7 +11,7 @@ function genDiff(array|null $array1, array|null $array2, bool $prefix = false): 
     }
 
     if ($array1 === [] && $array2 === []) {
-        return "";
+        return [];
     }
 
     $equalKeys = array_intersect(array_keys($array1), array_keys($array2));
