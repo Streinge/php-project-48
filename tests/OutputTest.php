@@ -17,8 +17,8 @@ class OutputTest extends TestCase
 
     public function testOutputNull(): void
     {
-
-        $this->expectOutputString("There is no file or files with that name in the current directory!\n\n");
+        $errorNessage = "There is no file with that name or unknown file extension in the current directory!\n\n";
+        $this->expectOutputString($errorNessage);
 
         output(null);
     }

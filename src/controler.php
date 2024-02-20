@@ -12,13 +12,13 @@ function controler(string $filepath1, string $filepath2, callable $fn): string|n
         $ext = pathinfo($filepath1, PATHINFO_EXTENSION);
         if ($ext === 'json') {
             return jsonInArray($filepath1);
-        } elseif ($ext = 'yml' || $ext = 'yaml') {
+        } elseif ($ext === 'yml' || $ext === 'yaml') {
             return yamlInArray($filepath1);
         } else {
             return null;
         }
     };
+
     $isMyNull = is_null($arrayFile($filepath1)) || is_null($arrayFile($filepath2));
-    $errorStr = "Не поддерживается сравнение таких файлов";
-    return (!$isMyNull) ? $fn(genDiff($arrayFile($filepath1), $arrayFile($filepath2))) : $errorStr;
+    return !$isMyNull ? $fn(genDiff($arrayFile($filepath1), $arrayFile($filepath2))) : null;
 }

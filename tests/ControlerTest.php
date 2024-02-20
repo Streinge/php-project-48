@@ -67,8 +67,6 @@ class ControlerTest extends TestCase
                            ]
                ];
 
-        $exepted2 = "Не поддерживается сравнение таких файлов";
-
         $pathDir = __DIR__;
         $pathFix = "{$pathDir}/fixtures/";
         $real1 = controler("{$pathFix}file1.json", "{$pathFix}file2.json", fn($array) => stylish($array, ' ', 2));
@@ -78,7 +76,7 @@ class ControlerTest extends TestCase
         $real5 = controler("{$pathFix}file5.yml", "{$pathFix}file6.yml", fn($array) => stylish($array, ' ', 2));
         $this->assertEquals(stylish($exeptedArray1, ' ', 2), $real1);
         $this->assertEquals(stylish($exeptedArray1, ' ', 2), $real2);
-        $this->assertEquals($exepted2, $real3);
+        $this->assertNull($real3);
         $this->assertEquals(stylish($exeptedNestedResult, ' ', 2), $real4);
         $this->assertEquals(stylish($exeptedNestedResult, ' ', 2), $real5);
     }
