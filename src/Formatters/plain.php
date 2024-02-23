@@ -2,7 +2,7 @@
 
 namespace Hexlet\Code;
 
-function toString(mixed $value): string
+function toStringNew(mixed $value): string
 {
     // эта функция делает так, чтобы true и false выводились как строка
     if ($value === '[complex value]') {
@@ -14,26 +14,31 @@ function toString(mixed $value): string
 
 function plain($incoming)
 {
-    $dfs = function ($incoming, $newKeyArray = []) use (&$dfs) {
-        if (!is_array($incoming)) {
-            $newKeyArray[] = $incoming;
+    $changedIncoming = array_reduce(array_keys($incoming), function ($acc, $key) use ($incoming) {
+        $acc[$key] = ($key[0] === '+' || $key[0] === '-') ? '[complex value]' : $incoming[$key];
+        return $acc;
+    }, []);
+
+    $dfs = function ($changedIncoming, $newKeyArray = []) use (&$dfs) {
+        if (!is_array($changedIncoming)) {
+            $newKeyArray[] = $changedIncoming;
             return $newKeyArray;
-        } elseif (count($incoming) === 1) {
-            $incoming = '[complex value]';
-            $newKeyArray[] = $incoming;
+        } elseif (count($changedIncoming) === 1) {
+            $changedIncoming = '[complex value]';
+            $newKeyArray[] = $changedIncoming;
             return $newKeyArray;
         }
 
 
-        $new = array_map(function ($key) use ($incoming, $newKeyArray, &$dfs) {
+        $new = array_map(function ($key) use ($changedIncoming, $newKeyArray, &$dfs) {
             $prefix = $key[0];
             $sign = $newKeyArray[0] ?? null;
             $signStatus = ($sign === " ") || empty($newKeyArray);
             $newKeyArray[0] =  $signStatus ? $prefix : $sign;
             $actualKey = substr($key, 2);
             $newKeyArray[] = $actualKey;
-            return $dfs($incoming[$key], $newKeyArray);
-        }, array_keys($incoming));
+            return $dfs($changedIncoming[$key], $newKeyArray);
+        }, array_keys($changedIncoming));
 
         return $new;
     };
@@ -53,7 +58,7 @@ function plain($incoming)
     };
 
     $newResult = [];
-    $sourceArray = $flatten($dfs($incoming), $newResult);
+    $sourceArray = $flatten($dfs($changedIncoming), $newResult);
 
     $isEqualKeys = function ($old, $element) {
         $sliceOld = array_slice($old, 1, -1);
@@ -90,66 +95,19 @@ function plain($incoming)
     $stringArray = array_reduce($changedArray, function ($acc, $item) use ($flattenKey) {
         if ($item[0] === "+") {
             $key = $flattenKey($item, 1);
-            $value = toString($item[count($item) - 1]);
+            $value = toStringNew($item[count($item) - 1]);
             $acc[] = "Property {$key} was added with value: {$value}";
         } elseif (($item[0] === "-")) {
             $key = $flattenKey($item, 1);
             $acc[] = "Property {$key} was removed";
         } elseif (($item[0] === "changed")) {
             $key = $flattenKey($item, 2);
-            $value1 = toString($item[count($item) - 2]);
-            $value2 = toString($item[count($item) - 1]);
+            $value1 = toStringNew($item[count($item) - 2]);
+            $value2 = toStringNew($item[count($item) - 1]);
             $acc[] = "Property {$key} was updated. From {$value1} to {$value2}";
         }
         return $acc;
     }, []);
 
-    return $stringArray;
+    return implode("\n", $stringArray);
 }
-
-$exeptedNestedResult = [
-    '  common' => [
-                '+ follow' => false,
-                '  setting1' => 'Value 1',
-                '- setting2' => 200,
-                '- setting3' => true,
-                '+ setting3' => null,
-                '+ setting4' => 'blah blah',
-                '+ setting5' => [
-                               '  key5' =>  'value5'
-                                ],
-                '  setting6' => [
-                              '  doge' => [
-                                        '- wow' => '',
-                                        '+ wow' => 'so much'
-                                        ],
-                              '  key' => 'value',
-                              '+ ops' => 'vops'
-                                ]
-                ],
-     '  group1' => [
-                   '- baz' => 'bas',
-                   '+ baz' => 'bars',
-                   '  foo' => 'bar',
-                   '- nest' => [
-                               '  key' => 'value'
-                               ],
-                   '+ nest' => 'str'
-                   ],
-     '- group2' => [
-                   '  abc' => 12345,
-                   '  deep' => [
-                               '  id' => 45
-                               ]
-                   ],
-     '+ group3' => [
-                   '  deep' => [
-                             '  id' => [
-                                     '  number' => 45
-                                     ]
-                             ],
-                   '  fee' => 100500
-                   ]
-];
-
-print_r(plain($exeptedNestedResult));
