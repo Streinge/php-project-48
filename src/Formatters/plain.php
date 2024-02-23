@@ -5,31 +5,106 @@ namespace Hexlet\Code;
 function toString(mixed $value): string
 {
     // эта функция делает так, чтобы true и false выводились как строка
-     return trim(var_export($value, true), "'");
+    if ($value === '[complex value]') {
+        return $value;
+    }
+    $newValue =  trim(var_export($value, true), "'");
+    return is_string($value) ? "'{$newValue}'" : $newValue;
 }
 
-function plain(array|null $incoming, &$result, $oldKey = '')
+function plain($incoming)
 {
-    $currentKeys = array_keys($incoming);
-    foreach ($currentKeys as $key) {
-        $prefix = (!$key[0]) ? " " : $key[0];
-        $keyValue = substr($key, 2);
-        if ($prefix === " ") {
-            $newKey = "{$oldKey}.{$keyValue}";
-        } else {
-            $valueKeyOld = substr($oldKey, 1);
-            $newKey = "{$prefix}.{$valueKeyOld}.{$keyValue}";
+    $dfs = function ($incoming, $newKeyArray = []) use (&$dfs) {
+        if (!is_array($incoming)) {
+            $newKeyArray[] = $incoming;
+            return $newKeyArray;
+        } elseif (count($incoming) === 1) {
+            $incoming = '[complex value]';
+            $newKeyArray[] = $incoming;
+            return $newKeyArray;
         }
-        var_dump($newKey);
-        var_dump($key);
-        var_dump($incoming[$key]);
-        if (is_array($incoming[$key])) {
-            plain($incoming[$key], $result, $newKey);
-        } else {
-            $result[$newKey] = $incoming[$key];
+
+
+        $new = array_map(function ($key) use ($incoming, $newKeyArray, &$dfs) {
+            $prefix = $key[0];
+            $sign = $newKeyArray[0] ?? null;
+            $signStatus = ($sign === " ") || empty($newKeyArray);
+            $newKeyArray[0] =  $signStatus ? $prefix : $sign;
+            $actualKey = substr($key, 2);
+            $newKeyArray[] = $actualKey;
+            return $dfs($incoming[$key], $newKeyArray);
+        }, array_keys($incoming));
+
+        return $new;
+    };
+
+    $flatten = function ($needsFolded, &$newResult) use (&$flatten) {
+        foreach ($needsFolded as $item) {
+            if (is_array($item)) {
+                $flatten($item, $newResult);
+            } else {
+                $status = in_array($needsFolded, $newResult);
+                if (!$status) {
+                    $newResult[] = $needsFolded;
+                }
+            }
         }
-    }
-    return $result;
+        return $newResult;
+    };
+
+    $newResult = [];
+    $sourceArray = $flatten($dfs($incoming), $newResult);
+
+    $isEqualKeys = function ($old, $element) {
+        $sliceOld = array_slice($old, 1, -1);
+        $sliceElement = array_slice($element, 1, -1);
+        return $sliceOld === $sliceElement;
+    };
+
+    $sourceArray[] = [];
+
+    $old = [];
+    $changedArray = array_reduce($sourceArray, function ($acc, $element) use (&$old, $isEqualKeys) {
+        if (empty($old)) {
+            $old = $element;
+        } else {
+            if ($isEqualKeys($old, $element)) {
+                $old[0] = "changed";
+                $acc[] = [...$old, $element[count($element) - 1]];
+                $old = [];
+            } else {
+                $acc[] = $old;
+                $old = $element;
+            }
+        }
+        return $acc;
+    }, []);
+
+
+    $flattenKey = function ($item, $numbersValue) {
+        $sliceItem = array_slice($item, 1, - $numbersValue);
+        $key = implode(".", $sliceItem);
+        return "'{$key}'";
+    };
+
+    $stringArray = array_reduce($changedArray, function ($acc, $item) use ($flattenKey) {
+        if ($item[0] === "+") {
+            $key = $flattenKey($item, 1);
+            $value = toString($item[count($item) - 1]);
+            $acc[] = "Property {$key} was added with value: {$value}";
+        } elseif (($item[0] === "-")) {
+            $key = $flattenKey($item, 1);
+            $acc[] = "Property {$key} was removed";
+        } elseif (($item[0] === "changed")) {
+            $key = $flattenKey($item, 2);
+            $value1 = toString($item[count($item) - 2]);
+            $value2 = toString($item[count($item) - 1]);
+            $acc[] = "Property {$key} was updated. From {$value1} to {$value2}";
+        }
+        return $acc;
+    }, []);
+
+    return $stringArray;
 }
 
 $exeptedNestedResult = [
@@ -77,6 +152,4 @@ $exeptedNestedResult = [
                    ]
 ];
 
-
-$result = [];
-print_r(plain($exeptedNestedResult, $result));
+print_r(plain($exeptedNestedResult));
