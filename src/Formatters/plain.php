@@ -2,8 +2,6 @@
 
 namespace Hexlet\Code;
 
-use function PHPUnit\Framework\isNull;
-
 function toStringNew(mixed $value): string
 {
     // эта функция делает так, чтобы true и false выводились как строка

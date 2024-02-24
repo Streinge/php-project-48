@@ -17,6 +17,6 @@ class ReadFileTest extends TestCase
         $this->assertEquals($exepted1, readComparedFile("{$pathDir}/fixtures/file1.json"));
         $this->assertEquals($exepted2, readComparedFile("{$pathDir}/fixtures/file2.json"));
         $this->assertEquals("", readComparedFile("{$pathDir}/fixtures/file3.json"));
-        $this->assertNull(readComparedFile("{$pathDir}/fixtures/file_not_exist.json"));
+        $this->assertEmpty(readComparedFile("{$pathDir}/fixtures/file_not_exist.json"));
     }
 }

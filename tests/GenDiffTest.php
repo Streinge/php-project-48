@@ -164,7 +164,6 @@ class GenDiffTest extends TestCase
         $this->assertEquals($fn2($exeptedArray2), genDiff("{$pathFix}file1.json", "{$pathFix}file4.json", 'plain'));
         $this->assertEquals($fn3($exeptedArray3), genDiff("{$pathFix}file3.json", "{$pathFix}file2.json", 'json'));
         $this->assertEquals($fn1([]), genDiff("{$pathFix}file3.json", "{$pathFix}file4.json", 'stylish'));
-
         $this->assertEquals($fn2($exeptedNestedResult), genDiff("{$pathFix}file5.yml", "{$pathFix}file6.yml", 'plain'));
     }
 }

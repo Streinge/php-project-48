@@ -2,7 +2,7 @@
 
 namespace Hexlet\Code;
 
-function json(array $incoming): string|null
+function json(array $incoming): string
 {
     return json_encode($incoming) . "\n";
 }
