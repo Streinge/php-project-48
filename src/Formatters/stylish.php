@@ -11,7 +11,7 @@ function toString(mixed $value): string
 function getsArray($incoming, &$base, $str)
 {
     $result = array_reduce(array_keys($incoming), function ($acc, $key) use ($incoming, $str, $base) {
-        $value = is_bool($incoming[$key]) ? toString($incoming[$key]) : $incoming[$key];
+        $value = is_bool($incoming[$key]) || is_null($incoming[$key]) ? toString($incoming[$key]) : $incoming[$key];
         if (!is_array($value)) {
             $acc[] = "\n{$base}{$key}: {$value}";
         } else {
