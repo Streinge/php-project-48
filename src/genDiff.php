@@ -80,6 +80,7 @@ function genDiff(string $filepath1, string $filepath2, string $format = 'stylish
 
         return $result;
     };
-    $isNullResult = is_null($genDiffArray($array1, $array2));
-    return $isNullResult ? null : $fn($genDiffArray($array1, $array2));
+    //$isNullResult = is_null($genDiffArray($array1, $array2));
+    //return $isNullResult ? null : $fn($genDiffArray($array1, $array2));
+    return $fn($genDiffArray($array1, $array2));
 }
