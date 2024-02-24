@@ -6,6 +6,7 @@ use PHPUnit\Framework\TestCase;
 
 use function Hexlet\Code\controler;
 use function Hexlet\Code\stylish;
+use function Hexlet\Code\json;
 use function Hexlet\Code\output;
 
 class ControlerTest extends TestCase
@@ -74,10 +75,12 @@ class ControlerTest extends TestCase
         $real3 = controler("{$pathFix}file1.json", "{$pathFix}file2.txt", 'stylish');
         $real4 = controler("{$pathFix}file5.json", "{$pathFix}file6.json", 'stylish');
         $real5 = controler("{$pathFix}file5.yml", "{$pathFix}file6.yml", 'stylish');
-        $this->assertEquals(stylish($exeptedArray1, ' ', 2), $real1);
-        $this->assertEquals(stylish($exeptedArray1, ' ', 2), $real2);
+        $real6 = controler("{$pathFix}file5.json", "{$pathFix}file6.json", 'json');
+        $this->assertEquals(stylish($exeptedArray1), $real1);
+        $this->assertEquals(stylish($exeptedArray1), $real2);
         $this->assertNull($real3);
-        $this->assertEquals(stylish($exeptedNestedResult, ' ', 2), $real4);
-        //$this->assertEquals(stylish($exeptedNestedResult, ' ', 2), $real5);
+        $this->assertEquals(stylish($exeptedNestedResult), $real4);
+        //$this->assertEquals(stylish($exeptedNestedResult), $real5);
+        $this->assertEquals(json($exeptedNestedResult), $real6);
     }
 }
