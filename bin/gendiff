@@ -36,5 +36,6 @@ $args = Docopt::handle($doc);
 
 $file1 = $args['<firstFile>'];
 $file2 = $args['<secondFile>'];
+$format = (empty($args['--format'])) ? 'stylish' : $args['--format'];
 
-output(controler($file1, $file2, fn($array) => stylish($array, ' ', 2)));
+output(controler($file1, $file2, $format));

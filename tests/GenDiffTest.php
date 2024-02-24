@@ -151,12 +151,13 @@ class GenDiffTest extends TestCase
                                                 "fee" => 100500
                                                 ]
                         ];
+        $fn = fn($array) => stylish($array);
 
-        $this->assertEquals($exeptedArray1, genDiff($array1, $array2));
-        $this->assertEquals($exeptedArray2, genDiff($array1, $array4));
-        $this->assertEquals($exeptedArray3, genDiff($array3, $array2));
-        $this->assertEquals([], genDiff($array3, $array4));
-        $this->assertNull(genDiff(null, $array4));
-        $this->assertEquals(($exeptedNestedResult), genDiff($nestedArray1, $nestedArray2));
+        $this->assertEquals($fn($exeptedArray1), genDiff($array1, $array2, $fn));
+        $this->assertEquals($fn($exeptedArray2), genDiff($array1, $array4, $fn));
+        $this->assertEquals($fn($exeptedArray3), genDiff($array3, $array2, $fn));
+        $this->assertEquals($fn([]), genDiff($array3, $array4, $fn));
+        $this->assertNull(genDiff(null, $array4, $fn));
+        $this->assertEquals($fn($exeptedNestedResult), genDiff($nestedArray1, $nestedArray2, $fn));
     }
 }

@@ -12,7 +12,7 @@ function toStringNew(mixed $value): string
     return is_string($value) ? "'{$newValue}'" : $newValue;
 }
 
-function plain($incoming)
+function plain(array $incoming): string
 {
     $changedIncoming = array_reduce(array_keys($incoming), function ($acc, $key) use ($incoming) {
         $acc[$key] = ($key[0] === '+' || $key[0] === '-') ? '[complex value]' : $incoming[$key];
@@ -109,5 +109,5 @@ function plain($incoming)
         return $acc;
     }, []);
 
-    return implode("\n", $stringArray);
+    return implode("\n", $stringArray) . "\n";
 }

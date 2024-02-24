@@ -5,8 +5,10 @@ namespace Hexlet\Code;
 use Hexlet\Code\jsonInArray;
 use Hexlet\Code\yamlInArray;
 use Hexlet\Code\genDiff;
+use Hexlet\Code\stylish;
+use Hexlet\Code\plain;
 
-function controler(string $filepath1, string $filepath2, callable $fn): string|null
+function controler(string $filepath1, string $filepath2, string $format): string|null
 {
     $arrayFile = function (string $filepath1): array|null {
         $ext = pathinfo($filepath1, PATHINFO_EXTENSION);
@@ -19,6 +21,13 @@ function controler(string $filepath1, string $filepath2, callable $fn): string|n
         }
     };
 
+    if ($format === 'stylish') {
+        $fn = fn($array) => stylish($array);
+    } elseif ($format === 'plain') {
+        $fn = fn($array) => plain($array);
+    }
+
     $isMyNull = is_null($arrayFile($filepath1)) || is_null($arrayFile($filepath2));
-    return !$isMyNull ? $fn(genDiff($arrayFile($filepath1), $arrayFile($filepath2))) : null;
+
+    return !$isMyNull ? genDiff($arrayFile($filepath1), $arrayFile($filepath2), $fn) : null;
 }

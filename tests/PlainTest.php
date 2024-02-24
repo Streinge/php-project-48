@@ -70,7 +70,7 @@ class PlainTest extends TestCase
                            ]
                ];
 
-        $exepted = implode("\n", $exeptedArray1);
+        $exepted = implode("\n", $exeptedArray1) . "\n";
 
         $this->assertEquals($exepted, plain($exeptedNestedResult));
     }

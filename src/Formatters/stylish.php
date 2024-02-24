@@ -8,7 +8,7 @@ function toString(mixed $value): string
      return trim(var_export($value, true), "'");
 }
 
-function stylish($value, string $replacer = ' ', int $spacesCount = 1): string
+function stylish($value, string $replacer = ' ', int $spacesCount = 2): string
 {
     // Функция аналог JavaScript содержит метод JSON.stringify() для приведения к строке любого значения.
     $iter = function ($currentValue, $depth) use (&$iter, $replacer, $spacesCount) {
@@ -33,5 +33,5 @@ function stylish($value, string $replacer = ' ', int $spacesCount = 1): string
 
         return implode("\n", $result);
     };
-    return $iter($value, 1);
+    return $iter($value, 1) . "\n";
 }

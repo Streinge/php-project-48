@@ -69,11 +69,11 @@ class ControlerTest extends TestCase
 
         $pathDir = __DIR__;
         $pathFix = "{$pathDir}/fixtures/";
-        $real1 = controler("{$pathFix}file1.json", "{$pathFix}file2.json", fn($array) => stylish($array, ' ', 2));
-        $real2 = controler("{$pathFix}file1.yml", "{$pathFix}file2.yml", fn($array) => stylish($array, ' ', 2));
-        $real3 = controler("{$pathFix}file1.json", "{$pathFix}file2.txt", fn($array) => stylish($array, ' ', 2));
-        $real4 = controler("{$pathFix}file5.json", "{$pathFix}file6.json", fn($array) => stylish($array, ' ', 2));
-        $real5 = controler("{$pathFix}file5.yml", "{$pathFix}file6.yml", fn($array) => stylish($array, ' ', 2));
+        $real1 = controler("{$pathFix}file1.json", "{$pathFix}file2.json", 'stylish');
+        $real2 = controler("{$pathFix}file1.yml", "{$pathFix}file2.yml", 'stylish');
+        $real3 = controler("{$pathFix}file1.json", "{$pathFix}file2.txt", 'stylish');
+        $real4 = controler("{$pathFix}file5.json", "{$pathFix}file6.json", 'stylish');
+        $real5 = controler("{$pathFix}file5.yml", "{$pathFix}file6.yml", 'stylish');
         $this->assertEquals(stylish($exeptedArray1, ' ', 2), $real1);
         $this->assertEquals(stylish($exeptedArray1, ' ', 2), $real2);
         $this->assertNull($real3);
