@@ -10,9 +10,13 @@ if (file_exists($autoloadPath1)) {
     require_once $autoloadPath2;
 }
 
+use function Differ\Differ\genDiff;
 use function Hexlet\Code\controler;
 use function Hexlet\Code\output;
 use function Hexlet\Code\stylish;
+use function Hexlet\Code\jsonInArray;
+
+
 
 $doc = <<<DOC
 
@@ -38,4 +42,7 @@ $file1 = $args['<firstFile>'];
 $file2 = $args['<secondFile>'];
 $format = (empty($args['--format'])) ? 'stylish' : $args['--format'];
 
-output(controler($file1, $file2, $format));
+//output(controler($file1, $file2, $format));
+
+$f1 = genDiff(jsonInArray($file1), jsonInArray($file2), $format);
+echo $f1;

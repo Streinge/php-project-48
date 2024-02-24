@@ -7,9 +7,6 @@
         "test": "phpunit tests"
       },
     "autoload": {
-        "psr-4": {
-            "Hexlet\\Code\\": "src/"
-        },
         "files": [
             "src/genDiff.php",
             "src/readComparedFile.php",

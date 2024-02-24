@@ -1,11 +1,37 @@
 <?php
 
-namespace Hexlet\Code;
+namespace Differ\Differ;
 
 const INDEX_FIRST_CHAR_KEY = 2;
 
-function genDiff(array|null $array1, array|null $array2, callable $fn): string|null
+$arrayFile = function (string $filepath1): array|null {
+    $ext = pathinfo($filepath1, PATHINFO_EXTENSION);
+    if ($ext === 'json') {
+        return jsonInArray($filepath1);
+    } elseif ($ext === 'yml' || $ext === 'yaml') {
+        return yamlInArray($filepath1);
+    } else {
+        return null;
+    }
+};
+
+if ($format === 'stylish') {
+    $fn = fn($array) => stylish($array);
+} elseif ($format === 'plain') {
+    $fn = fn($array) => plain($array);
+} elseif ($format === 'json') {
+    $fn = fn($array) => json($array);
+}
+
+$isMyNull = is_null($arrayFile($filepath1)) || is_null($arrayFile($filepath2));
+
+return !$isMyNull ? genDiff($arrayFile($filepath1), $arrayFile($filepath2), $fn) : null;
+
+function genDiff(string $filepath1, string $filepath1, string $format): string
 {
+
+
+
     $genDiffArray = function (array|null $array1, array|null $array2, bool $prefix = false) use (&$genDiffArray) {
         if (is_null($array1) || is_null($array2)) {
             return null;
