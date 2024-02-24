@@ -9,7 +9,7 @@ use function Hexlet\Code\json;
 
 const INDEX_FIRST_CHAR_KEY = 2;
 
-function genDiff(string $filepath1, string $filepath2, string $format)
+function genDiff(string $filepath1, string $filepath2, string $format = 'stylish')
 {
     $array1 = parser($filepath1);
     $array2 = parser($filepath2);
