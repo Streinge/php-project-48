@@ -2,11 +2,15 @@
 
 namespace Hexlet\Code;
 
+use function PHPUnit\Framework\isNull;
+
 function toStringNew(mixed $value): string
 {
     // эта функция делает так, чтобы true и false выводились как строка
     if ($value === '[complex value]') {
         return $value;
+    } elseif (is_null($value)) {
+        return 'null';
     }
     $newValue =  trim(var_export($value, true), "'");
     return is_string($value) ? "'{$newValue}'" : $newValue;
