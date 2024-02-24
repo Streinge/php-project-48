@@ -5,7 +5,7 @@ namespace Hexlet\Code;
 function toString(mixed $value): string
 {
     // эта функция делает так, чтобы true и false выводились как строка
-     return trim(var_export($value, true), "'");
+     return is_null($value) ? 'null' : trim(var_export($value, true), "'");
 }
 
 function getsArray($incoming, &$base, $str)

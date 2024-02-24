@@ -9,13 +9,13 @@ function jsonInArray(string $filepath): array|null
     $dataFile1 = readComparedFile($filepath);
     $jsonArray1 = json_decode($dataFile1, true) ?? [];
 
-    return (!is_null($dataFile1)) ? $jsonArray1 : null;
+    return $jsonArray1;
 }
 
 function yamlInArray(string $filepath): array|null
 {
     $dataFile1 = readComparedFile($filepath);
-    return (!is_null($dataFile1)) ? Yaml::parse($dataFile1) : null;
+    return Yaml::parse($dataFile1);
 }
 
 function parser(string $filepath)
