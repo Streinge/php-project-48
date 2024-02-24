@@ -4,8 +4,10 @@ namespace Hexlet\Code\Tests;
 
 use PHPUnit\Framework\TestCase;
 
-use function Hexlet\Code\genDiff;
+use function Differ\Differ\genDiff;
 use function Hexlet\Code\stylish;
+use function Hexlet\Code\plain;
+use function Hexlet\Code\json;
 
 class GenDiffTest extends TestCase
 {
@@ -30,7 +32,7 @@ class GenDiffTest extends TestCase
 
         $exeptedArray3 = [
             '+ host' => 'hexlet.io',
-            '+ timeout' => '20',
+            '+ timeout' => 20,
             '+ verbose' => true
         ];
 
@@ -150,14 +152,18 @@ class GenDiffTest extends TestCase
                                                           ],
                                                 "fee" => 100500
                                                 ]
-                        ];
-        $fn = fn($array) => stylish($array);
+        ];
 
-        $this->assertEquals($fn($exeptedArray1), genDiff($array1, $array2, $fn));
-        $this->assertEquals($fn($exeptedArray2), genDiff($array1, $array4, $fn));
-        $this->assertEquals($fn($exeptedArray3), genDiff($array3, $array2, $fn));
-        $this->assertEquals($fn([]), genDiff($array3, $array4, $fn));
-        $this->assertNull(genDiff(null, $array4, $fn));
-        $this->assertEquals($fn($exeptedNestedResult), genDiff($nestedArray1, $nestedArray2, $fn));
+        $pathDir = __DIR__;
+        $pathFix = "{$pathDir}/fixtures/";
+        $fn1 = fn($array) => stylish($array);
+        $fn2 = fn($array) => plain($array);
+        $fn3 = fn($array) => json($array);
+
+        $this->assertEquals($fn1($exeptedArray1), genDiff("{$pathFix}file1.json", "{$pathFix}file2.json", 'stylish'));
+        $this->assertEquals($fn2($exeptedArray2), genDiff("{$pathFix}file1.json", "{$pathFix}file4.json", 'plain'));
+        $this->assertEquals($fn3($exeptedArray3), genDiff("{$pathFix}file3.json", "{$pathFix}file2.json", 'json'));
+        $this->assertEquals($fn1([]), genDiff("{$pathFix}file3.json", "{$pathFix}file4.json", 'stylish'));
+        $this->assertEquals($fn2($exeptedNestedResult), genDiff("{$pathFix}file5.yml", "{$pathFix}file6.yml", 'plain'));
     }
 }

@@ -10,9 +10,7 @@
         "files": [
             "src/genDiff.php",
             "src/readComparedFile.php",
-            "src/output.php",
             "src/Parsers.php",
-            "src/controler.php",
             "src/Formatters/stylish.php",
             "src/Formatters/plain.php",
             "src/Formatters/json.php"
