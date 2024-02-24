@@ -7,8 +7,9 @@ use Hexlet\Code\yamlInArray;
 use Hexlet\Code\genDiff;
 use Hexlet\Code\stylish;
 use Hexlet\Code\plain;
+use Hexlet\Code\json;
 
-function controler(string $filepath1, string $filepath2, string $format): string|null
+function controler(string $filepath1, string $filepath2, string $format)//: //string|null
 {
     $arrayFile = function (string $filepath1): array|null {
         $ext = pathinfo($filepath1, PATHINFO_EXTENSION);
@@ -25,6 +26,8 @@ function controler(string $filepath1, string $filepath2, string $format): string
         $fn = fn($array) => stylish($array);
     } elseif ($format === 'plain') {
         $fn = fn($array) => plain($array);
+    } elseif ($format === 'json') {
+        $fn = fn($array) => json($array);
     }
 
     $isMyNull = is_null($arrayFile($filepath1)) || is_null($arrayFile($filepath2));
