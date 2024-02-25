@@ -20,6 +20,8 @@ function genDiff(string $filepath1, string $filepath2, string $format = 'stylish
         $fn = fn($array) => plain($array);
     } elseif ($format === 'json') {
         $fn = fn($array) => json($array);
+    } else {
+        throw new \Exception("The output format is not specified!");
     }
 
     $genDiffArray = function (array|null $array1, array|null $array2, bool $prefix = false) use (&$genDiffArray) {
@@ -62,8 +64,9 @@ function genDiff(string $filepath1, string $filepath2, string $format = 'stylish
             array_keys($filtered1),
             function ($acc, $key) use ($filtered1, $array1, $prefix, $genDiffArray) {
                 $newKey = (!$prefix) ? "- {$key}" : "  {$key}";
-                $acc[$newKey] = !is_array($filtered1[$key]) ? $filtered1[$key] : $genDiffArray($array1[$key], [], true);
-                return $acc;
+                $element = [$newKey =>
+                    !is_array($filtered1[$key]) ? $filtered1[$key] : $genDiffArray($array1[$key], [], true)];
+                return array_merge($element, $acc);
             },
             []
         );
@@ -71,19 +74,23 @@ function genDiff(string $filepath1, string $filepath2, string $format = 'stylish
             array_keys($filtered2),
             function ($acc, $key) use ($filtered2, $array2, $prefix, $genDiffArray) {
                 $newKey = (!$prefix) ? "+ {$key}" : "  {$key}";
-                $acc[$newKey] = !is_array($filtered2[$key]) ? $filtered2[$key] : $genDiffArray([], $array2[$key], true);
-                return $acc;
+                $element = [$newKey =>
+                !is_array($filtered2[$key]) ? $filtered2[$key] : $genDiffArray([], $array2[$key], true)];
+                return array_merge($element, $acc);
             },
             []
         );
 
         $result = array_merge($arrayStringsEqual, $arrayStrings1, $arrayStrings2);
 
-        uksort($result, fn($a, $b) => substr($a, INDEX_FIRST_CHAR_KEY) <=> substr($b, INDEX_FIRST_CHAR_KEY));
+        $immutableSort = function (array $result): array {
+            $sortedArray = $result;
+            uksort($sortedArray, fn($a, $b) => substr($a, INDEX_FIRST_CHAR_KEY) <=> substr($b, INDEX_FIRST_CHAR_KEY));
+            return $sortedArray;
+        };
 
-        return $result;
+        return $immutableSort($result);
     };
-    //$isNullResult = is_null($genDiffArray($array1, $array2));
-    //return $isNullResult ? null : $fn($genDiffArray($array1, $array2));
+
     return $fn($genDiffArray($array1, $array2));
 }
