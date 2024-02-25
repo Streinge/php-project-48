@@ -64,29 +64,37 @@ function plain(array $incoming): string
     };
     //var_dump($sourceArray);
     $old = [];
+
+    $changeOldToElement = function (&$old, $element) {
+        $old = $element;
+    };
     # находим элементы в которых были изменения
-    $changedArray = array_reduce($sourceArray, function ($acc, $element) use (&$old, $isEqualKeys) {
+    $changedArray = array_reduce(
+        $sourceArray,
+        function ($acc, $element) use (&$old, $isEqualKeys, $changeOldToElement) {
         # для этого хочу сравнить элементы массивов без префикса и значения (это будущие составные ключи)
-        if ($old === []) {
-            $old = $element;
-        } else {
-            # здесь если составные ключи равны
-            if ($isEqualKeys($old, $element)) {
-                # здесь убираю префикс из будущего составного ключа
-                $oldWhithoutPrefix = array_slice($old, 1);
-                # и поскольку сравнение закончилось - пара найдена то начинаем поиск занова old = []
-                $old = [];
-                # возвращаю массив с новым элементом массива
-                return [...$acc, ["changed", ...$oldWhithoutPrefix, $element[count($element) - 1]]];
+            if ($old === []) {
+                $x = $changeOldToElement($old, $element);
             } else {
-                # если составные ключи не совпадают, то возвращаю элемент со старым элементом массива
-                $newOld = $old;
-                $old = $element;
-                return [...$acc, $newOld];
+                # здесь если составные ключи равны
+                if ($isEqualKeys($old, $element)) {
+                    # здесь убираю префикс из будущего составного ключа
+                    $oldWhithoutPrefix = array_slice($old, 1);
+                    # и поскольку сравнение закончилось - пара найдена то начинаем поиск занова old = []
+                    $old = [];
+                    # возвращаю массив с новым элементом массива
+                    return [...$acc, ["changed", ...$oldWhithoutPrefix, $element[count($element) - 1]]];
+                } else {
+                    # если составные ключи не совпадают, то возвращаю элемент со старым элементом массива
+                    $newOld = $old;
+                    $x = $changeOldToElement($old, $element);
+                    return [...$acc, $newOld];
+                }
             }
-        }
-        return $acc;
-    }, []);
+            return $acc;
+        },
+        []
+    );
 
     $flattenKey = function ($item, $numbersValue) {
         $sliceItem = array_slice($item, 1, (int) (- $numbersValue));
