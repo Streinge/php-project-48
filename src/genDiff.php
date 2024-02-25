@@ -9,7 +9,7 @@ use function Hexlet\Code\json;
 
 const INDEX_FIRST_CHAR_KEY = 2;
 
-function genDiff(string $filepath1, string $filepath2, string $format = 'stylish')
+function genDiff(string $filepath1, string $filepath2, string $format = 'stylish'): string
 {
     $array1 = parser($filepath1);
     $array2 = parser($filepath2);
@@ -72,7 +72,7 @@ function genDiff(string $filepath1, string $filepath2, string $format = 'stylish
         );
         $arrayStrings2 = array_reduce(
             array_keys($filtered2),
-            function ($acc, $key) use ($filtered2, $array2, $prefix, $genDiffArray) {
+            function (array $acc, string $key) use ($filtered2, $array2, $prefix, $genDiffArray): array {
                 $newKey = (!$prefix) ? "+ {$key}" : "  {$key}";
                 $element = [$newKey =>
                 !is_array($filtered2[$key]) ? $filtered2[$key] : $genDiffArray([], $array2[$key], true)];
@@ -84,8 +84,11 @@ function genDiff(string $filepath1, string $filepath2, string $format = 'stylish
         $result = array_merge($arrayStringsEqual, $arrayStrings1, $arrayStrings2);
 
         $immutableSort = function (array $result): array {
-            $sortedArray = $result;
-            uksort($sortedArray, fn($a, $b) => substr($a, INDEX_FIRST_CHAR_KEY) <=> substr($b, INDEX_FIRST_CHAR_KEY));
+            $keys = array_keys($result);
+            $status = usort($keys, fn($a, $b) => substr($a, INDEX_FIRST_CHAR_KEY) <=> substr($b, INDEX_FIRST_CHAR_KEY));
+            $sortedArray = array_reduce($keys, function ($acc, $key) use ($result) {
+                return array_merge($acc, [$key => $result[$key]]);
+            }, []);
             return $sortedArray;
         };
 
