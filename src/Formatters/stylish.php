@@ -4,38 +4,33 @@ namespace Hexlet\Code;
 
 function toString(mixed $value): string
 {
-    // эта функция делает так, чтобы true и false выводились как строка
-     return is_null($value) ? 'null' : trim(var_export($value, true), "'");
+    return is_null($value) ? 'null' : trim(var_export($value, true), "'");
 }
 
-function getsArray($incoming, &$base, $str)
+function stylish($value, string $replacer = ' ', int $spacesCount = 1): string
 {
-    $result = array_reduce(array_keys($incoming), function ($acc, $key) use ($incoming, $str, $base) {
-        $value = is_bool($incoming[$key]) || is_null($incoming[$key]) ? toString($incoming[$key]) : $incoming[$key];
-        if (!is_array($value)) {
-            $acc[] = "\n{$base}{$key}: {$value}";
-        } else {
-            $acc[] = "\n{$base}{$key}: {";
-            $base .= str_repeat($str, 2);
-            $value = getsArray($value, $base, $str);
-            $acc = [...$acc, ...$value];
-            $base = substr($base, 0, -1 * strlen($str));
-            $acc[] = "\n{$base}}";
+
+    $iter = function ($currentValue, $depth) use (&$iter, $replacer, $spacesCount) {
+
+        if (!is_array($currentValue)) {
+            return toString($currentValue);
         }
-        return $acc;
-    }, []);
 
-    return $result;
-}
+        $indentSize = $depth * $spacesCount;
 
-function stylish($incoming, string $replacer = ' ', int $counter = 2)
-{
-    if (!is_array($incoming)) {
-        return $incoming;
-    }
+        $currentIndent = str_repeat($replacer, $indentSize);
 
-    $base = str_repeat($replacer, $counter);
-    $result =  implode('', getsArray($incoming, $base, $base));
+        $bracketIndent = str_repeat($replacer, $indentSize - $spacesCount);
 
-    return "{{$result}\n}\n";
+        $lines = array_map(
+            fn($key, $val) => "{$currentIndent}{$key}: {$iter($val, $depth + 2)}",
+            array_keys($currentValue),
+            $currentValue
+        );
+
+        $result = ['{', ...$lines, "{$bracketIndent}}"];
+
+        return implode("\n", $result);
+    };
+    return $iter($value, 1);
 }
