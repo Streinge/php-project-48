@@ -38,20 +38,23 @@ function genDiff(string $filepath1, string $filepath2, string $format = 'stylish
 
         $keysWithoutSign = array_merge($keysEqualValues, $keysWithArray);
 
-        $filteredEqual =  array_filter($array1, fn($key) => in_array($key, $keysWithoutSign), ARRAY_FILTER_USE_KEY);
-        $filtered1 =  array_filter($array1, fn($key) => !in_array($key, $keysWithoutSign), ARRAY_FILTER_USE_KEY);
-        $filtered2 =  array_filter($array2, fn($key) => !in_array($key, $keysWithoutSign), ARRAY_FILTER_USE_KEY);
+        $filteredEqual =  array_filter(
+            $array1,
+            fn($key) => in_array($key, $keysWithoutSign, true),
+            ARRAY_FILTER_USE_KEY
+        );
+        $filtered1 =  array_filter($array1, fn($key) => !in_array($key, $keysWithoutSign, true), ARRAY_FILTER_USE_KEY);
+        $filtered2 =  array_filter($array2, fn($key) => !in_array($key, $keysWithoutSign, true), ARRAY_FILTER_USE_KEY);
 
         $keysEqual = array_keys($filteredEqual);
         $arrayStringsEqual = array_reduce(
             $keysEqual,
             function ($acc, $key) use ($filteredEqual, $array1, $array2, $genDiffArray) {
                 $newKey = "  {$key}";
-                $acc[$newKey] =
-                !is_array($filteredEqual[$key])
-                    ? $filteredEqual[$key]
-                    : $genDiffArray($array1[$key], $array2[$key]);
-                return $acc;
+                $element = [$newKey =>
+                    !is_array($filteredEqual[$key])
+                    ? $filteredEqual[$key] : $genDiffArray($array1[$key], $array2[$key])];
+                return array_merge($element, $acc);
             },
             []
         );
