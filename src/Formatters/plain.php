@@ -65,8 +65,8 @@ function plain(array $incoming): string
     //var_dump($sourceArray);
     $old = [];
 
-    $changeOldToElement = function (&$old, $element) {
-        $old = $element;
+    $changeOldToElement = function ($element) {
+        return $element;
     };
     # находим элементы в которых были изменения
     $changedArray = array_reduce(
@@ -74,20 +74,20 @@ function plain(array $incoming): string
         function ($acc, $element) use (&$old, $isEqualKeys, $changeOldToElement) {
         # для этого хочу сравнить элементы массивов без префикса и значения (это будущие составные ключи)
             if ($old === []) {
-                $x = $changeOldToElement($old, $element);
+                $old = $changeOldToElement($element);
             } else {
                 # здесь если составные ключи равны
                 if ($isEqualKeys($old, $element)) {
                     # здесь убираю префикс из будущего составного ключа
                     $oldWhithoutPrefix = array_slice($old, 1);
                     # и поскольку сравнение закончилось - пара найдена то начинаем поиск занова old = []
-                    $old = [];
+                    $old = $changeOldToElement([]);
                     # возвращаю массив с новым элементом массива
                     return [...$acc, ["changed", ...$oldWhithoutPrefix, $element[count($element) - 1]]];
                 } else {
                     # если составные ключи не совпадают, то возвращаю элемент со старым элементом массива
                     $newOld = $old;
-                    $x = $changeOldToElement($old, $element);
+                    $old = $changeOldToElement($element);
                     return [...$acc, $newOld];
                 }
             }
@@ -106,15 +106,15 @@ function plain(array $incoming): string
         if ($item[0] === "+") {
             $key = $flattenKey($item, 1);
             $value = toStringNew($item[count($item) - 1]);
-            $acc[] = "Property {$key} was added with value: {$value}";
+            return [...$acc, "Property {$key} was added with value: {$value}"];
         } elseif (($item[0] === "-")) {
             $key = $flattenKey($item, 1);
-            $acc[] = "Property {$key} was removed";
+            return [...$acc, "Property {$key} was removed"];
         } elseif (($item[0] === "changed")) {
             $key = $flattenKey($item, 2);
             $value1 = toStringNew($item[count($item) - 2]);
             $value2 = toStringNew($item[count($item) - 1]);
-            $acc[] = "Property {$key} was updated. From {$value1} to {$value2}";
+            return [...$acc, "Property {$key} was updated. From {$value1} to {$value2}"];
         }
         return $acc;
     }, []);
