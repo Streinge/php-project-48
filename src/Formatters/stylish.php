@@ -30,7 +30,7 @@ function stylish($value, string $replacer = ' ', int $spacesCount = 2): string
 
         $result = ['{', ...$lines, "{$bracketIndent}}"];
 
-        return implode("\n", $result) . "\n";
+        return implode("\n", $result);
     };
-    return $iter($value, 1);
+    return $iter($value, 1) . "\n";
 }
