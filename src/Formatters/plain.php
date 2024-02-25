@@ -2,6 +2,8 @@
 
 namespace Hexlet\Code;
 
+use function Functional\id;
+
 function toStringNew(mixed $value): string
 {
     // эта функция делает так, чтобы true и false выводились как строка
@@ -65,29 +67,30 @@ function plain(array $incoming): string
     //var_dump($sourceArray);
     $old = [];
 
-    $changeOldToElement = function ($element) {
-        return $element;
+    $changeOldToElement = function (&$old, $element) {
+        $old = $element;
+        return true;
     };
     # находим элементы в которых были изменения
     $changedArray = array_reduce(
         $sourceArray,
-        function ($acc, $element) use (&$old, $isEqualKeys, $changeOldToElement) {
+        function ($acc, $element) use (&$old, $isEqualKeys, $changeOldToElement, $sourceArray) {
         # для этого хочу сравнить элементы массивов без префикса и значения (это будущие составные ключи)
             if ($old === []) {
-                $old = $changeOldToElement($element);
+                $x = $changeOldToElement($old, $element);
             } else {
                 # здесь если составные ключи равны
                 if ($isEqualKeys($old, $element)) {
                     # здесь убираю префикс из будущего составного ключа
                     $oldWhithoutPrefix = array_slice($old, 1);
                     # и поскольку сравнение закончилось - пара найдена то начинаем поиск занова old = []
-                    $old = $changeOldToElement([]);
+                    $x = $changeOldToElement($old, []);
                     # возвращаю массив с новым элементом массива
                     return [...$acc, ["changed", ...$oldWhithoutPrefix, $element[count($element) - 1]]];
                 } else {
                     # если составные ключи не совпадают, то возвращаю элемент со старым элементом массива
                     $newOld = $old;
-                    $old = $changeOldToElement($element);
+                    $x = $changeOldToElement($old, $element);
                     return [...$acc, $newOld];
                 }
             }
