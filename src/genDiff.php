@@ -6,6 +6,7 @@ use function Hexlet\Code\parser;
 use function Hexlet\Code\plain;
 use function Hexlet\Code\stylish;
 use function Hexlet\Code\json;
+use function Functional\sort;
 
 const INDEX_FIRST_CHAR_KEY = 2;
 
@@ -85,8 +86,11 @@ function genDiff(string $filepath1, string $filepath2, string $format = 'stylish
 
         $immutableSort = function (array $result): array {
             $keys = array_keys($result);
-            $status = usort($keys, fn($a, $b) => substr($a, INDEX_FIRST_CHAR_KEY) <=> substr($b, INDEX_FIRST_CHAR_KEY));
-            $sortedArray = array_reduce($keys, function ($acc, $key) use ($result) {
+            $keysSorted = sort(
+                $keys,
+                fn($a, $b) => substr($a, INDEX_FIRST_CHAR_KEY) <=> substr($b, INDEX_FIRST_CHAR_KEY)
+            );
+            $sortedArray = array_reduce($keysSorted, function ($acc, $key) use ($result) {
                 return array_merge($acc, [$key => $result[$key]]);
             }, []);
             return $sortedArray;
