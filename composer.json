@@ -7,6 +7,9 @@
         "test": "phpunit tests"
       },
     "autoload": {
+        "psr-4": {
+            "Php\\Package\\": "src"
+          },
         "files": [
             "src/genDiff.php",
             "src/readComparedFile.php",

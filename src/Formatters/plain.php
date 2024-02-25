@@ -35,57 +35,58 @@ function plain(array $incoming): string
             $prefix = $key[0];
             $sign = $newKeyArray[0] ?? null;
             $signStatus = ($sign === " " || $newKeyArray === []);
-            $newKeyArray[0] =  $signStatus ? $prefix : $sign;
+            $newPrefix =  $signStatus ? $prefix : $sign;
             $actualKey = substr($key, 2);
-            $newKeyArray[] = $actualKey;
-            return $dfs($changedIncoming[$key], $newKeyArray);
+            $arrayWhithoutPrefix = ($newKeyArray !== []) ? array_slice($newKeyArray, 1) : [];
+            return $dfs($changedIncoming[$key], [$newPrefix, ...$arrayWhithoutPrefix, $actualKey]);
         }, array_keys($changedIncoming));
 
         return $new;
     };
 
-    $flatten = function ($needsFolded, &$newResult) use (&$flatten) {
-        foreach ($needsFolded as $item) {
-            if (is_array($item)) {
-                $flatten($item, $newResult);
+    $flatt = function ($needsFolded) use (&$flatt) {
+        $fn = array_reduce($needsFolded, function ($acc, $item) use (&$flatt) {
+            if (is_array($item) && !is_array($item[0])) {
+                return array_merge($acc, [$item]);
             } else {
-                $status = in_array($needsFolded, $newResult, true);
-                if (!$status) {
-                    $newResult[] = $needsFolded;
-                }
+                return array_merge($acc, $flatt($item));
             }
-        }
-        return $newResult;
+        }, []);
+        return $fn;
     };
 
-    $newResult = [];
-    $sourceArray = $flatten($dfs($changedIncoming), $newResult);
+    $sourceArray = [...$flatt($dfs($changedIncoming)), []];
 
     $isEqualKeys = function ($old, $element) {
         $sliceOld = array_slice($old, 1, -1);
         $sliceElement = array_slice($element, 1, -1);
         return $sliceOld === $sliceElement;
     };
-
-    $sourceArray[] = [];
-
+    //var_dump($sourceArray);
     $old = [];
+    # находим элементы в которых были изменения
     $changedArray = array_reduce($sourceArray, function ($acc, $element) use (&$old, $isEqualKeys) {
+        # для этого хочу сравнить элементы массивов без префикса и значения (это будущие составные ключи)
         if ($old === []) {
             $old = $element;
         } else {
+            # здесь если составные ключи равны
             if ($isEqualKeys($old, $element)) {
-                $old[0] = "changed";
-                $acc[] = [...$old, $element[count($element) - 1]];
+                # здесь убираю префикс из будущего составного ключа
+                $oldWhithoutPrefix = array_slice($old, 1);
+                # и поскольку сравнение закончилось - пара найдена то начинаем поиск занова old = []
                 $old = [];
+                # возвращаю массив с новым элементом массива
+                return [...$acc, ["changed", ...$oldWhithoutPrefix, $element[count($element) - 1]]];
             } else {
-                $acc[] = $old;
+                # если составные ключи не совпадают, то возвращаю элемент со старым элементом массива
+                $newOld = $old;
                 $old = $element;
+                return [...$acc, $newOld];
             }
         }
         return $acc;
     }, []);
-
 
     $flattenKey = function ($item, $numbersValue) {
         $sliceItem = array_slice($item, 1, (int) (- $numbersValue));
