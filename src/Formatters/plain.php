@@ -18,7 +18,7 @@ function plain(array $incoming): string
 {
     $changedIncoming = array_reduce(array_keys($incoming), function ($acc, $key) use ($incoming) {
         $element = [$key =>
-            ([0] === '+' || $key[0] === '-')
+            ($key[0] === '+' || $key[0] === '-')
             ? '[complex value]' : $incoming[$key]];
         return array_merge($acc, $element);
     }, []);
