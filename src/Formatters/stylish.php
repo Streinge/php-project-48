@@ -7,7 +7,7 @@ function toString(mixed $value): string
     return is_null($value) ? 'null' : trim(var_export($value, true), "'");
 }
 
-function stylish($value, string $replacer = ' ', int $spacesCount = 1): string
+function stylish($value, string $replacer = ' ', int $spacesCount = 2): string
 {
 
     $iter = function ($currentValue, $depth) use (&$iter, $replacer, $spacesCount) {
