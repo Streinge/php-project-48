@@ -17,25 +17,24 @@ function toStringNew(mixed $value): string
 function plain(array $incoming): string
 {
     $changedIncoming = array_reduce(array_keys($incoming), function ($acc, $key) use ($incoming) {
-        $acc[$key] = ($key[0] === '+' || $key[0] === '-') ? '[complex value]' : $incoming[$key];
-        return $acc;
+        $element = [$key =>
+            ([0] === '+' || $key[0] === '-')
+            ? '[complex value]' : $incoming[$key]];
+        return array_merge($acc, $element);
     }, []);
 
     $dfs = function ($changedIncoming, $newKeyArray = []) use (&$dfs) {
         if (!is_array($changedIncoming)) {
-            $newKeyArray[] = $changedIncoming;
-            return $newKeyArray;
+            return [...$newKeyArray, $changedIncoming];
         } elseif (count($changedIncoming) === 1) {
-            $changedIncoming = '[complex value]';
-            $newKeyArray[] = $changedIncoming;
-            return $newKeyArray;
+            return [...$newKeyArray, '[complex value]'];
         }
 
 
         $new = array_map(function ($key) use ($changedIncoming, $newKeyArray, &$dfs) {
             $prefix = $key[0];
             $sign = $newKeyArray[0] ?? null;
-            $signStatus = ($sign === " ") || empty($newKeyArray);
+            $signStatus = ($sign === " " || $newKeyArray === []);
             $newKeyArray[0] =  $signStatus ? $prefix : $sign;
             $actualKey = substr($key, 2);
             $newKeyArray[] = $actualKey;
@@ -50,7 +49,7 @@ function plain(array $incoming): string
             if (is_array($item)) {
                 $flatten($item, $newResult);
             } else {
-                $status = in_array($needsFolded, $newResult);
+                $status = in_array($needsFolded, $newResult, true);
                 if (!$status) {
                     $newResult[] = $needsFolded;
                 }
@@ -72,7 +71,7 @@ function plain(array $incoming): string
 
     $old = [];
     $changedArray = array_reduce($sourceArray, function ($acc, $element) use (&$old, $isEqualKeys) {
-        if (empty($old)) {
+        if ($old === []) {
             $old = $element;
         } else {
             if ($isEqualKeys($old, $element)) {
@@ -89,7 +88,7 @@ function plain(array $incoming): string
 
 
     $flattenKey = function ($item, $numbersValue) {
-        $sliceItem = array_slice($item, 1, - $numbersValue);
+        $sliceItem = array_slice($item, 1, (int) (- $numbersValue));
         $key = implode(".", $sliceItem);
         return "'{$key}'";
     };
