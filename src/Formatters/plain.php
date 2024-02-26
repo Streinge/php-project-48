@@ -57,55 +57,44 @@ function plain(array $incoming): string
         return $fn;
     };
 
-    $sourceArray = [...$flatt($dfs($changedIncoming)), []];
+    $sourceArrayNew = $flatt($dfs($changedIncoming));
 
-    $isEqualKeys = function ($old, $element) {
-        $sliceOld = array_slice($old, 1, -1);
-        $sliceElement = array_slice($element, 1, -1);
-        return $sliceOld === $sliceElement;
-    };
-    //var_dump($sourceArray);
-    $old = [];
+    $onlyKeys = array_map(fn($value) => array_slice($value, 1, -1), $sourceArrayNew);
+    $uniqueOnlyKeys = array_unique($onlyKeys, SORT_REGULAR);
+    $nonUniqueKeys = array_diff_key($onlyKeys, $uniqueOnlyKeys);
+    $uniqueIndexes = array_keys($uniqueOnlyKeys);
 
-    $changeOldToElement = function (&$old, $element) {
-        $old = $element;
-        return true;
-    };
-    # находим элементы в которых были изменения
-    $changedArray = array_reduce(
-        $sourceArray,
-        function ($acc, $element) use (&$old, $isEqualKeys, $changeOldToElement, $sourceArray) {
-        # для этого хочу сравнить элементы массивов без префикса и значения (это будущие составные ключи)
-            if ($old === []) {
-                $x = $changeOldToElement($old, $element);
+    $uniqueSourceArray = array_filter(array_map(
+        function ($index) use ($sourceArrayNew, $uniqueIndexes) {
+            return in_array($index, $uniqueIndexes, true) ? $sourceArrayNew[$index] : [];
+        },
+        array_keys($sourceArrayNew)
+    ));
+
+    $indexesNonUnique = array_keys($nonUniqueKeys);
+
+    $firstIndexes = array_map(fn($index) => $index - 1, $indexesNonUnique);
+    $changedArrayNew = array_reduce(
+        array_keys($uniqueSourceArray),
+        function ($acc, $index) use ($uniqueSourceArray, $sourceArrayNew, $firstIndexes) {
+            if (in_array($index, $firstIndexes, true)) {
+                $valueWithoutSign = array_slice($uniqueSourceArray[$index], 1);
+                $lastIndex = count($sourceArrayNew[$index + 1]) - 1;
+                $updatedValue = $sourceArrayNew[$index + 1][$lastIndex];
+                return [...$acc, ['changed', ...$valueWithoutSign, $updatedValue]];
             } else {
-                # здесь если составные ключи равны
-                if ($isEqualKeys($old, $element)) {
-                    # здесь убираю префикс из будущего составного ключа
-                    $oldWhithoutPrefix = array_slice($old, 1);
-                    # и поскольку сравнение закончилось - пара найдена то начинаем поиск занова old = []
-                    $x = $changeOldToElement($old, []);
-                    # возвращаю массив с новым элементом массива
-                    return [...$acc, ["changed", ...$oldWhithoutPrefix, $element[count($element) - 1]]];
-                } else {
-                    # если составные ключи не совпадают, то возвращаю элемент со старым элементом массива
-                    $newOld = $old;
-                    $x = $changeOldToElement($old, $element);
-                    return [...$acc, $newOld];
-                }
+                return [...$acc, $uniqueSourceArray[$index]];
             }
-            return $acc;
         },
         []
     );
-
     $flattenKey = function ($item, $numbersValue) {
         $sliceItem = array_slice($item, 1, (int) (- $numbersValue));
         $key = implode(".", $sliceItem);
         return "'{$key}'";
     };
 
-    $stringArray = array_reduce($changedArray, function ($acc, $item) use ($flattenKey) {
+    $stringArray = array_reduce($changedArrayNew, function ($acc, $item) use ($flattenKey) {
         if ($item[0] === "+") {
             $key = $flattenKey($item, 1);
             $value = toStringNew($item[count($item) - 1]);
